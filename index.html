@@ -1,14 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Landing Page - David Page</title>
 
+    <!-- Google Material Font Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
     <link rel="stylesheet" href="style/main.css">
 </head>
-<body>
 
+<body class="landing-page">
+    <header class="site-header">
+        <button class="nav-toggle">
+            <span class="nav-toggle__icon material-icons">menu</span>
+        </button>
+        <nav class="primary-nav">
+            <ul class="nav-menu" id="nav-menu">
+
+                <!-- TEST NAV ITEMS -->
+                <li class="nav-menu__item nav-menu__item--current" id="nav__section-1">
+                    <button class="nav-heading">Heading 1</button>
+                </li>
+
+                <li class="nav-menu__item" id="nav__section-2">
+                    <button class="nav-heading">Heading 2</button>
+                </li>
+
+                <li class="nav-menu__item" id="nav__section-3">
+                    <button class="nav-heading">Heading 3</button>
+                </li>
+                <!-- End TEST NAV ITEMS -->
+
+            </ul>
+            <div class="nav-marker" id="nav-marker"></div>
+        </nav>
+    </header>
+    <main class="site-main">
+        <article class="content">
+
+            <!-- TEST SECTIONS -->
+            <div class="section card card--rotates" id="section-1">
+                <h1 class="card__heading card__heading--main">Heading 1</h1>
+                <p class="card__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+
+            <div class="section card card--rotates" id="section-2">
+                <h2 class="card__heading">Heading 2</h2>
+                <p class="card__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+
+            <div class="section card card--rotates" id="section-3">
+                <h2 class="card__heading">Heading 3</h2>
+                <p class="card__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+            <!-- End TEST SECTIONS -->
+
+        </article>
+        <div class="dot-container" id="dot-container">
+
+            <!-- TEST DOTS -->
+            <div class="dot" id="dot-1"></div>
+            <div class="dot" id="dot-2"></div>
+            <div class="dot" id="dot-3"></div>
+            <div class="dot" id="dot-4"></div>
+            <!-- End TEST DOTS -->
+
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-bar">
+            <p>Created by David Page © 2021</p>
+        </div>
+    </footer>
     <script src="js/app.js"></script>
 </body>
+
 </html>
