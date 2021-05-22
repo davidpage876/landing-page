@@ -154,6 +154,11 @@ h3 {
  * Main Navigation
  */
 
+ /* TODO: Use a JS based solution instead for better performance on mobile */
+.site-header {
+    position: fixed;
+}
+
 .nav-toggle {
     border: none;
     border-radius: 10px;
