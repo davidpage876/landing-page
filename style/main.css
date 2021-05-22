@@ -1,6 +1,64 @@
 @import url(normalize.css);
 
 /* -----------------------------------------------------------
+ * Typology
+ */
+
+p,
+h1,
+h2,
+h3,
+a,
+button,
+div {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 22px;
+}
+
+p {
+    font-size: 25px;
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 400;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+h3 {
+    font-size: 27px;
+}
+
+@media only screen and (min-width: 960px) {
+
+    p {
+        font-size: 32px;
+    }
+
+    h1 {
+        font-size: 58px;
+    }
+
+    h2 {
+        font-size: 46px;
+    }
+
+    h3 {
+        font-size: 34px;
+    }
+
+}
+
+/* -----------------------------------------------------------
  * Layout
  */
 
