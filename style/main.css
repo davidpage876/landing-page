@@ -90,6 +90,7 @@ h3 {
 
 .site-main {
     grid-area: main;
+    z-index: 1;
 }
 
 @media only screen and (min-width: 960px) {
@@ -180,6 +181,33 @@ h3 {
         padding-left: 22%;
     }
 
+}
+
+/* -----------------------------------------------------------
+ * Background gradient
+ */
+
+ /* TODO: Move using JS */
+.gradient-bg {
+    position: absolute;
+    width: 100%;
+    height: 1000px; /* Fallback */
+    height: 100vh;
+}
+
+.gradient-bg--bluish {
+    background-color: #3400C7; /* Fallback */
+    background: linear-gradient(#3400C7, #6800A3);
+}
+
+.gradient-bg--greenish {
+    background-color: #004C34; /* Fallback */
+    background: linear-gradient(#004C34, #176D00);
+}
+
+.gradient-bg--redish {
+    background-color: #680200; /* Fallback */
+    background: linear-gradient(#680200, #BB6A00);
 }
 
 /* -----------------------------------------------------------
