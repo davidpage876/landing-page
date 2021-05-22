@@ -149,3 +149,33 @@ h3 {
     }
 
 }
+
+/* -----------------------------------------------------------
+ * Main Navigation
+ */
+
+.nav-toggle {
+    border: none;
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    margin: 27px 0 0 19px;
+}
+
+.nav-toggle__icon {
+    vertical-align: middle;
+    font-size: 28px;
+}
+
+.nav-menu {
+    list-style: none;
+    border-left: dotted 3px;
+    margin: 9px 0 0 37px;
+    padding: 0 0 0 6px;
+}
+
+.nav-link {
+    border: none;
+    background: none;
+    padding: 15px 5px;
+}
