@@ -23,6 +23,7 @@ div {
     font-weight: 300;
     font-size: 22px;
     line-height: 1.2;
+    color: #fff;
 }
 
 .section p {
@@ -73,7 +74,7 @@ h3 {
  * Layout
  */
 
- .landing-page {
+.landing-page {
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
@@ -124,6 +125,7 @@ h3 {
 }
 
 .nav-toggle {
+    background: #fff;
     border: none;
     border-radius: 10px;
     width: 40px;
@@ -132,13 +134,14 @@ h3 {
 }
 
 .nav-toggle__icon {
+    color: #000;
     vertical-align: middle;
     font-size: 28px;
 }
 
 .nav-menu {
     list-style: none;
-    border-left: dotted 3px;
+    border-left: dotted 3px #fff;
     margin: 9px 0 0 37px;
     padding: 0 0 0 6px;
 }
@@ -186,6 +189,10 @@ h3 {
 /* -----------------------------------------------------------
  * Background gradient
  */
+
+.landing-page {
+    background-color: #222; /* Default fallback */
+}
 
  /* TODO: Move using JS */
 .gradient-bg {
