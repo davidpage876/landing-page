@@ -65,12 +65,12 @@ h3 {
  * Layout
  */
 
-.landing-page {
+ .landing-page {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-areas:
-    "main"
-    "foot";
+    "main";
 }
 
 /* Note:
@@ -84,18 +84,13 @@ h3 {
     grid-area: main;
 }
 
-.site-footer {
-    grid-area: foot;
-}
-
 @media only screen and (min-width: 960px) {
 
     .landing-page {
         display: grid;
         grid-template-columns: 2fr 5fr;
         grid-template-areas:
-        "side main"
-        "foot foot";
+        "side main";
     }
 
     .site-header {
@@ -108,12 +103,6 @@ h3 {
 .section {
     height: 600px; /* Fallback */
     height: 100vh;
-}
-
-/* Footer */
-.footer-bar {
-    width: 100%;
-    text-align: center;
 }
 
 /* -----------------------------------------------------------
@@ -183,4 +172,20 @@ h3 {
     border: none;
     background: none;
     padding: 15px 5px;
+}
+
+/* -----------------------------------------------------------
+ * Footer bar
+ */
+
+.site-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.footer-bar {
+    width: 100%;
+    text-align: center;
 }
