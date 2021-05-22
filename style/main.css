@@ -1,4 +1,9 @@
 @import url(normalize.css);
+
+/* -----------------------------------------------------------
+ * Layout
+ */
+
 .landing-page {
     display: grid;
     grid-template-columns: 1fr;
