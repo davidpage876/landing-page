@@ -186,6 +186,21 @@ h3 {
 
 }
 
+/* Card rotation effect */
+/* TODO: May need to control perspective origin with JS */
+.uses-perspective {
+    perspective: 750px;
+    perspective-origin: 37.5% 50%;
+}
+
+.rotate-90cw {
+    transform: rotate3d(0, 1, 0, -90deg);
+}
+
+.rotate-90ccw {
+    transform: rotate3d(0, 1, 0, 90deg);
+}
+
 /* -----------------------------------------------------------
  * Background gradient
  */
