@@ -140,6 +140,9 @@ h3 {
 }
 
 .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     list-style: none;
     border-left: dotted 3px #fff;
     margin: 9px 0 0 37px;
@@ -152,7 +155,6 @@ h3 {
     border: none;
     background: none;
     padding: 15px 5px;
-    margin: 2px 0;
 }
 
 /* -----------------------------------------------------------
