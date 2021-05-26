@@ -233,6 +233,11 @@ h3 {
     background: linear-gradient(#680200, #BB6A00);
 }
 
+.gradient-bg--aquaish {
+    background-color: #0090c7; /* Fallback */
+    background: linear-gradient(#0090c7, #00a35f);
+}
+
 /* -----------------------------------------------------------
  * Footer bar
  */
