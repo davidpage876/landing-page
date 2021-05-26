@@ -147,6 +147,8 @@ h3 {
 }
 
 .nav-link {
+    display: block;
+    text-decoration: none;
     border: none;
     background: none;
     padding: 15px 5px;
