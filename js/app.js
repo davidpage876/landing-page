@@ -2,8 +2,8 @@
 /**
  * @description Describes navigation list elements.
  * @constructor
- * @param {Element} container Navigation list container.
- * @param {Element[]} items Navigation list items.
+ * @param {Element} container - Navigation list container.
+ * @param {Element[]} items - Navigation list items.
  */
 function Navigation(container, items) {
     this.container = container;
