@@ -1,18 +1,27 @@
 
 /**
- * @description Build navigation list items based on given content.
- * @param {string} contentSelector - Look for children inside the container with this CSS selector.
- * @param {string} contentChildSelector - Look for child elements with this CSS selector inside the contentSelector container.
- * @param {Element} navContainer - Created navigation list items are added as children to this container.
+ * @description Describes navigation list elements.
+ * @constructor
+ * @param {Element} container Navigation list container.
+ * @param {Element[]} items Navigation list items.
  */
-function buildNavigation(contentSelector, contentChildSelector, navContainer) {
-    const sections = document.querySelectorAll(`${contentSelector} > ${contentChildSelector}`);
+function Navigation(container, items) {
+    this.container = container;
+    this.items = items;
+}
 
-    for (section of sections) {
+/**
+ * @description Build navigation list items based on given content.
+ * @param {Element[]} contentSections - Build navigation based on this list of content sections.
+ * @param {Element} navContainer - Created navigation list items are added as children to this container.
+ * @returns {Navigation} Returns the newly created navigation list data.
+ */
+function buildNavigation(contentSections, navContainer) {
+    const items = [];
+    for (const section of contentSections) {
 
         // Create nav li.
         const navItem = document.createElement('LI');
-
         navItem.classList.add('nav-menu__item');
 
         // Create nav li a.
@@ -26,17 +35,22 @@ function buildNavigation(contentSelector, contentChildSelector, navContainer) {
         navItem.appendChild(navAnchor);
 
         // Append nav li to container.
-        navContainer.appendChild(navItem);
+        const addedItem = navContainer.appendChild(navItem);
+        items.push(addedItem);
     }
+    return new Navigation(navContainer, items);
 }
 
 /**
  * @description Perform initial page set up, including building the navigation menu from content.
  */
 function pageSetup() {
-    const navContainer = document.querySelector('#nav-menu');
 
-    buildNavigation('#content', '.section', navContainer);
+    // Build navigation.
+    const navContainer = document.querySelector('#nav-menu');
+    const contentSections = document.querySelectorAll('#content > .section');
+
+    const nav = buildNavigation(contentSections, navContainer);
 }
 
 pageSetup();
