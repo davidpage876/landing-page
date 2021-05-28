@@ -1,61 +1,58 @@
 
 /**
- * @description Makes the given section in focus.
- * This triggers CSS state to highlight the section in the focus.
- * @param {Element} section - Section to focus on.
- * @param {Element[]} contentSections - List of all content sections.
- * Used to remove focus from other sections.
- * @param {Navigation} navigation - Navigation list to update to match.
+ * @description Returns the element in elementList with the given ID.
+ * @param {Element[]} elementList List of elements.
+ * @param {string} id Element ID to search for.
+ * @returns The element if found, null if not found.
  */
-function focusSection(section, contentSections, navigation) {
+function getElementWithId(elementList, id) {
+    for (const element of elementList) {
+        if (element.id === id) {
+            return element;
+        }
+    }
+    return null;
+}
+
+/**
+ * @description Makes the given section in focus.
+ * The section in focus has the class 'focus' added to it.
+ * 'focus' is also added to the associated navigation list item.
+ * All other sections and navigation items lose focus.
+ * @param {string} sectionId - ID of the section to focus on.
+ * @param {Element[]} contentSections - List of all content sections.
+ * @param {Element[]} navItems - List of navigation items.
+ */
+function focusSection(sectionId, contentSections, navItems) {
 
     // Remove focus from all sections.
-    for (const s of contentSections) {
-        s.classList.remove('focus');
+    for (const section of contentSections) {
+        section.classList.remove('focus');
     }
 
     // Remove focus from all nav items.
-    for (const item of navigation.items) {
+    for (const item of navItems) {
         item.classList.remove('focus');
     }
 
     // Focus on the section.
-    section.classList.add('focus');
+    const section = getElementWithId(contentSections, sectionId);
+    if (section) {
+        section.classList.add('focus');
+    }
 
     // Focus on nav item.
-    const navItem = navigation.getItem(section.id);
-    navItem.classList.add('focus');
-}
-
-/**
- * @description Describes navigation list elements.
- * @constructor
- * @param {Element} container - Navigation list container.
- * @param {Element[]} items - Navigation list items.
- */
-function Navigation(container, items) {
-    this.container = container;
-    this.items = items;
-
-    /** Retrieves a navigation item by section ID.
-     *
-     * @param {string} sectionId - ID of the section.
-     * @returns {element} - Navigation item with ID matching the section ID.
-     */
-    this.getItem = function(sectionId) {
-        for (const item of items) {
-            if (item.id === sectionId) {
-                return item;
-            }
-        }
-    };
+    const navItem = getElementWithId(navItems, sectionId);
+    if (navItem) {
+        navItem.classList.add('focus');
+    }
 }
 
 /**
  * @description Build navigation list items based on given content.
  * @param {Element[]} contentSections - Build navigation based on this list of content sections.
  * @param {Element} navContainer - Created navigation list items are added as children to this container.
- * @returns {Navigation} - Returns the newly created navigation list data.
+ * @returns {Element[]} - Returns the newly created navigation items.
  */
 function buildNavigation(contentSections, navContainer) {
     const items = [];
@@ -81,7 +78,7 @@ function buildNavigation(contentSections, navContainer) {
         const addedItem = navContainer.appendChild(navItem);
         items.push(addedItem);
     }
-    return new Navigation(navContainer, items);
+    return items;
 }
 
 /**
@@ -92,12 +89,11 @@ function pageSetup() {
     // Build navigation.
     const navContainer = document.querySelector('#nav-menu');
     const contentSections = document.querySelectorAll('#content > .section');
-
-    const nav = buildNavigation(contentSections, navContainer);
+    const navItems = buildNavigation(contentSections, navContainer);
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0], contentSections, nav);
+        focusSection(contentSections[0].id, contentSections, navItems);
     }
 }
 
