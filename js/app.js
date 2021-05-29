@@ -118,8 +118,8 @@ function buildNavigation(contentSections, navContainer, navMarker) {
 function pageSetup() {
 
     // Build navigation.
-    const navContainer = document.querySelector('#nav-menu');
-    const navMarker = document.querySelector('#nav-marker');
+    const navContainer = document.getElementById('nav-menu');
+    const navMarker = document.getElementById('nav-marker');
     const contentSections = document.querySelectorAll('#content > .section');
     const navItems = buildNavigation(contentSections, navContainer, navMarker);
 
