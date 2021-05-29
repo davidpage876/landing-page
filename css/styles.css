@@ -303,12 +303,11 @@ h3 {
  */
 
 .landing-page {
-    background-color: #222; /* Default fallback */
+    background-color: #3400C7; /* Default fallback */
 }
 
- /* TODO: Move using JS */
 .gradient-bg {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 1000px; /* Fallback */
     height: 100vh;
