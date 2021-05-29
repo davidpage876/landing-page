@@ -9,8 +9,10 @@
  * @param {string} sectionId - ID of the section to focus on.
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Element[]} navItems - List of navigation items.
+ * @param {Element} navContainer - Container for navigation items.
+ * @param {Element} navMarker - Marker indicating current nav item.
  */
-function focusSection(sectionId, contentSections, navItems) {
+function focusSection(sectionId, contentSections, navItems, navContainer, navMarker) {
 
     // Remove focus from all sections.
     for (const section of contentSections) {
@@ -40,12 +42,29 @@ function focusSection(sectionId, contentSections, navItems) {
 }
 
 /**
+ * @description Positions the navigation marker to point to a navigation item.
+ * @param {Element} navMarker - Marker used to indicate current nav item.
+ * @param {Element} navContainer - Container for navigation items.
+ * @param {Element} navItem - Navigation item the marker points to.
+ */
+function moveNavMarker(navMarker, navContainer, navItem) {
+    const containerY = navContainer.getBoundingClientRect().y;
+    const {y: itemY, height: itemHeight} = navItem.getBoundingClientRect();
+    const markerHeight = navMarker.getBoundingClientRect().height;
+
+    const markerY = itemY - containerY + itemHeight / 2 - markerHeight / 2;
+    navMarker.style.top = `${markerY}px`;
+    console.log(`containerY:${containerY} itemY:${itemY} itemHeight:${itemHeight} markerHeight:${markerHeight} markerY:${markerY}`);
+}
+
+/**
  * @description Build navigation list items based on given content.
  * @param {Element[]} contentSections - Build navigation based on this list of content sections.
  * @param {Element} navContainer - Created navigation list items are added as children to this container.
+ * @param {Element} navMarker - Marker indicating current nav item.
  * @returns {Element[]} - Returns the newly created navigation items.
  */
-function buildNavigation(contentSections, navContainer) {
+function buildNavigation(contentSections, navContainer, navMarker) {
 
     // Build nav list.
     const navItems = [];
@@ -76,8 +95,17 @@ function buildNavigation(contentSections, navContainer) {
     for (const navItem of navItems) {
 
         // When nav item clicked focus on the corresponding section.
-        const focusOnSection = focusSection.bind(null, navItem.dataset.sectionId, contentSections, navItems);
-        navItem.addEventListener('click', focusOnSection, false);
+        const onSectionClick = focusSection.bind(null,
+            navItem.dataset.sectionId, contentSections, navItems, navContainer, navMarker);
+        navItem.addEventListener('click', onSectionClick, false);
+
+        // On transition end move the nav marker to the focused nav item.
+        const onTransitionEnd = function (marker, container, item) {
+            if (item.classList.contains('focus')) {
+                moveNavMarker(marker, container, item);
+            }
+        }.bind(null, navMarker, navContainer, navItem);
+        navItem.addEventListener('transitionend', onTransitionEnd, false);
     }
 
     // Return created nav list.
@@ -91,12 +119,13 @@ function pageSetup() {
 
     // Build navigation.
     const navContainer = document.querySelector('#nav-menu');
+    const navMarker = document.querySelector('#nav-marker');
     const contentSections = document.querySelectorAll('#content > .section');
-    const navItems = buildNavigation(contentSections, navContainer);
+    const navItems = buildNavigation(contentSections, navContainer, navMarker);
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0].id, contentSections, navItems);
+        focusSection(contentSections[0].id, contentSections, navItems, navContainer, navMarker);
     }
 }
 
