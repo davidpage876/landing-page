@@ -1,18 +1,5 @@
+/* Note: Does not support Internet Explorer. */
 
-/**
- * @description Returns the element in elementList with the given ID.
- * @param {Element[]} elementList List of elements.
- * @param {string} id Element ID to search for.
- * @returns The element if found, null if not found.
- */
-function getElementWithId(elementList, id) {
-    for (const element of elementList) {
-        if (element.id === id) {
-            return element;
-        }
-    }
-    return null;
-}
 
 /**
  * @description Makes the given section in focus.
@@ -35,14 +22,18 @@ function focusSection(sectionId, contentSections, navItems) {
         item.classList.remove('focus');
     }
 
-    // Focus on the section.
-    const section = getElementWithId(contentSections, sectionId);
+    // Find the section with sectionId ID and focus on it.
+    const section = Array.from(contentSections).find(function (s) {
+        return s.id === sectionId;
+    });
     if (section) {
         section.classList.add('focus');
     }
 
-    // Focus on nav item.
-    const navItem = getElementWithId(navItems, sectionId);
+    // Find the navigation item with data-section-id matching our sectionId and focus on it.
+    const navItem = Array.from(navItems).find(function (item) {
+        return item.dataset.sectionId === sectionId;
+    });
     if (navItem) {
         navItem.classList.add('focus');
     }
@@ -63,7 +54,7 @@ function buildNavigation(contentSections, navContainer) {
         const sectionId = section.id;
 
         navItem.classList.add('nav-menu__item');
-        navItem.id = sectionId;
+        navItem.dataset.sectionId = sectionId;
 
         // Create nav li a.
         const navAnchor = document.createElement('A');
