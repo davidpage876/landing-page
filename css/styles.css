@@ -105,7 +105,6 @@ h3 {
     grid-area: main;
     z-index: 2;
     width: 100%;
-    overflow-y: scroll;
 }
 
 @media only screen and (min-width: 960px) {
@@ -120,7 +119,6 @@ h3 {
     .site-header {
         grid-area: side;
         width: 30%;
-        overflow-y: unset;
     }
 
 }
@@ -165,6 +163,17 @@ h3 {
     margin: 9px 0 0 37px;
     padding: 0 0 0 6px;
     transition: opacity var(--fade-transition-time) ease-in-out;
+
+    /* Allow scrolling on overflow. */
+    overflow-y: scroll;
+    max-height: 90vh;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.nav-menu::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
 }
 
 .fade-out.nav-menu {
