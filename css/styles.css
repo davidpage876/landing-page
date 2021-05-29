@@ -85,6 +85,8 @@ h3 {
  * Layout
  */
 
+/* TODO: Is grid layout redundant, since my site header is display: fixed? */
+
 .landing-page {
     position: relative;
     display: grid;
@@ -194,9 +196,6 @@ h3 {
     border: none;
     background: none;
     padding: 15px 5px;
-    transition:
-        padding var(--nav-transition-time) ease-in-out,
-        font-size var(--nav-transition-time) ease-in-out;
 }
 
 .focus .nav-link {
@@ -213,12 +212,25 @@ h3 {
     border-radius: 3px 0 0 3px;
     left: -7px;
     top: 29px;
-    transition: top var(--nav-marker-transition-time) ease-in-out;
 }
 
-/* Hide site content while navigation is displayed on mobile */
+@media only screen and (min-width: 960px) {
+
+    .nav-link {
+        transition:
+            padding var(--nav-transition-time) ease-in-out,
+            font-size var(--nav-transition-time) ease-in-out;
+    }
+
+    .nav-marker {
+        transition: top var(--nav-marker-transition-time) ease-in-out;
+    }
+
+}
+
 @media only screen and (max-width: 960px) {
 
+    /* Hide site content while navigation is displayed on mobile. */
     .content {
         opacity: 0;
         transition: opacity var(--fade-transition-time) ease-in-out;
