@@ -14,9 +14,11 @@ function hasSmallScreen() {
  * All other sections and navigation items lose focus.
  * @param {string} sectionId - ID of the section to focus on.
  * @param {Element[]} contentSections - List of all content sections.
+ * @param {Element} contentContainer - Container for content.
  * @param {Element[]} navItems - List of navigation items.
+ * @param {Element} navContainer - Container for navigation items.
  */
-function focusSection(sectionId, contentSections, navItems) {
+function focusSection(sectionId, contentSections, contentContainer, navItems, navContainer) {
 
     // Remove focus from all sections.
     for (const section of contentSections) {
@@ -42,6 +44,16 @@ function focusSection(sectionId, contentSections, navItems) {
     });
     if (navItem) {
         navItem.classList.add('focus');
+    }
+
+
+    if (hasSmallScreen())
+    {
+        const body = document.querySelector('body');
+        navContainer.classList.add('fade-out');
+        contentContainer.classList.remove('hidden');
+        contentContainer.classList.add('fade-in');
+        body.classList.remove('disable-scroll');
     }
 }
 
@@ -102,7 +114,7 @@ function buildNavigation(contentSections, contentContainer, navContainer, navMar
 
         // When nav item clicked focus on the corresponding section.
         const onSectionClick = focusSection.bind(null,
-            navItem.dataset.sectionId, contentSections, navItems);
+            navItem.dataset.sectionId, contentSections, contentContainer, navItems, navContainer);
         navItem.addEventListener('click', onSectionClick, false);
 
         // On transition end move the nav marker to the focused nav item.
@@ -183,7 +195,7 @@ function pageSetup() {
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0].id, contentSections, navItems);
+        focusSection(contentSections[0].id, contentSections, contentContainer, navItems, navContainer);
     }
 }
 
