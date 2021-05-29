@@ -46,7 +46,9 @@ function focusSection(sectionId, contentSections, navItems) {
  * @returns {Element[]} - Returns the newly created navigation items.
  */
 function buildNavigation(contentSections, navContainer) {
-    const items = [];
+
+    // Build nav list.
+    const navItems = [];
     for (const section of contentSections) {
 
         // Create nav li.
@@ -67,9 +69,19 @@ function buildNavigation(contentSections, navContainer) {
 
         // Append nav li to container.
         const addedItem = navContainer.appendChild(navItem);
-        items.push(addedItem);
+        navItems.push(addedItem);
     }
-    return items;
+
+    // Add event handlers to nav list items.
+    for (const navItem of navItems) {
+
+        // When nav item clicked focus on the corresponding section.
+        const focusOnSection = focusSection.bind(null, navItem.dataset.sectionId, contentSections, navItems);
+        navItem.addEventListener('click', focusOnSection, false);
+    }
+
+    // Return created nav list.
+    return navItems;
 }
 
 /**
