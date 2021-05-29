@@ -5,8 +5,9 @@
  */
 
 :root {
-    --nav-transition-time: 0.2s;
     --section-transition-time: 1.2s;
+    --nav-transition-time: 0.2s;
+    --nav-marker-transition-time: calc(var(--section-transition-time) - var(--nav-transition-time));
 }
 
 /* -----------------------------------------------------------
@@ -184,6 +185,7 @@ h3 {
     border-radius: 3px 0 0 3px;
     left: -7px;
     top: 29px;
+    transition: top var(--nav-marker-transition-time) ease-in-out;
 }
 
 /* -----------------------------------------------------------
