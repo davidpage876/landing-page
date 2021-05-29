@@ -149,6 +149,7 @@ h3 {
 }
 
 .nav-menu {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -176,10 +177,13 @@ h3 {
 }
 
 .nav-marker {
+    position: absolute;
     background: #fff;
-    width: 4px;
-    height: 34px;
+    width: 7px;
+    height: 40px;
     border-radius: 3px 0 0 3px;
+    left: -7px;
+    top: 29px;
 }
 
 /* -----------------------------------------------------------
