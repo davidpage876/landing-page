@@ -62,9 +62,10 @@ function moveNavMarker(navMarker, navContainer, navItem) {
  * @param {Element[]} contentSections - Build navigation based on this list of content sections.
  * @param {Element} navContainer - Created navigation list items are added as children to this container.
  * @param {Element} navMarker - Marker indicating current nav item.
+ * @param {Element} navToggle - Button to toggle nav menu.
  * @returns {Element[]} - Returns the newly created navigation items.
  */
-function buildNavigation(contentSections, navContainer, navMarker) {
+function buildNavigation(contentSections, navContainer, navMarker, navToggle) {
 
     // Build nav list.
     const navItems = [];
@@ -108,6 +109,11 @@ function buildNavigation(contentSections, navContainer, navMarker) {
         navItem.addEventListener('transitionend', onTransitionEnd, false);
     }
 
+    // Toggle navigation on menu button click.
+    navToggle.addEventListener('click', function onToggleClick() {
+        navContainer.classList.toggle('hidden');
+    }, false);
+
     // Return created nav list.
     return navItems;
 }
@@ -121,7 +127,8 @@ function pageSetup() {
     const navContainer = document.getElementById('nav-menu');
     const navMarker = document.getElementById('nav-marker');
     const contentSections = document.querySelectorAll('#content > .section');
-    const navItems = buildNavigation(contentSections, navContainer, navMarker);
+    const navToggle = document.getElementById('nav-toggle');
+    const navItems = buildNavigation(contentSections, navContainer, navMarker, navToggle);
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {

@@ -126,11 +126,11 @@ h3 {
 }
 
 /* -----------------------------------------------------------
- * Navigation List
+ * Navigation Menu
  */
 
  /* TODO: Use a JS based solution instead for better performance on mobile */
- .site-header {
+.site-header {
     position: fixed;
 }
 
@@ -147,6 +147,10 @@ h3 {
     color: #000;
     vertical-align: middle;
     font-size: 28px;
+}
+
+.hidden.nav-menu {
+    opacity: 0;
 }
 
 .nav-menu {
