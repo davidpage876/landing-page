@@ -166,7 +166,7 @@ h3 {
 
     /* Allow scrolling on overflow. */
     overflow-y: scroll;
-    max-height: 90vh;
+    max-height: 70vh;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
 }
