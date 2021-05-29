@@ -175,6 +175,13 @@ h3 {
     padding-bottom: 30px;
 }
 
+.nav-marker {
+    background: #fff;
+    width: 4px;
+    height: 34px;
+    border-radius: 3px 0 0 3px;
+}
+
 /* -----------------------------------------------------------
  * Sections & Cards
  */
