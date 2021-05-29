@@ -303,7 +303,12 @@ h3 {
  */
 
 .gradient-bg {
+    position: absolute;
     background: #3400C7;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .gradient-bg--bluish {

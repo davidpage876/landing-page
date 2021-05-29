@@ -55,6 +55,26 @@ function focusSection(sectionId, contentSections, contentContainer, navItems, na
         contentContainer.classList.add('fade-in');
         body.classList.remove('disable-scroll');
     }
+
+
+
+    // Switch background gradient.
+    if (section) {
+        const gradientBg = document.getElementById('gradient-bg');
+
+        // Clear all classes that start with "gradient-bg--".
+        for (const className of gradientBg.classList) {
+            if (/^gradient-bg--/.test(className)) {
+                gradientBg.classList.remove(className);
+            }
+        }
+
+        // Use the section's gradient.
+        const sectionGradientName = section.dataset.bg.toLowerCase();
+        gradientBg.classList.add(`gradient-bg--${sectionGradientName}`);
+    }
+
+
 }
 
 /**
@@ -72,6 +92,8 @@ function moveNavMarker(navMarker, navContainer, navItem) {
     navMarker.style.top = `${markerY}px`;
     /*console.log(`containerY:${containerY} itemY:${itemY} itemHeight:${itemHeight} markerHeight:${markerHeight} markerY:${markerY}`);*/
 }
+
+// Todo: Make nav functions into a class to avoid these long parameter lists for each function.
 
 /**
  * @description Build navigation list items based on given content.
