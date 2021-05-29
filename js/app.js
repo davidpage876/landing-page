@@ -70,7 +70,7 @@ function moveNavMarker(navMarker, navContainer, navItem) {
 
     const markerY = itemY - containerY + itemHeight / 2 - markerHeight / 2;
     navMarker.style.top = `${markerY}px`;
-    console.log(`containerY:${containerY} itemY:${itemY} itemHeight:${itemHeight} markerHeight:${markerHeight} markerY:${markerY}`);
+    /*console.log(`containerY:${containerY} itemY:${itemY} itemHeight:${itemHeight} markerHeight:${markerHeight} markerY:${markerY}`);*/
 }
 
 /**
