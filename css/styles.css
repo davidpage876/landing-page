@@ -155,8 +155,11 @@ h3 {
     font-size: 28px;
 }
 
-.nav-menu {
+.primary-nav {
     position: relative;
+}
+
+.nav-menu {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -196,6 +199,9 @@ h3 {
     border: none;
     background: none;
     padding: 15px 5px;
+    transition:
+        padding var(--nav-transition-time) ease-in-out,
+        font-size var(--nav-transition-time) ease-in-out;
 }
 
 .focus .nav-link {
@@ -210,22 +216,9 @@ h3 {
     width: 7px;
     height: 40px;
     border-radius: 3px 0 0 3px;
-    left: -7px;
+    left: 33px;
     top: 29px;
-}
-
-@media only screen and (min-width: 960px) {
-
-    .nav-link {
-        transition:
-            padding var(--nav-transition-time) ease-in-out,
-            font-size var(--nav-transition-time) ease-in-out;
-    }
-
-    .nav-marker {
-        transition: top var(--nav-marker-transition-time) ease-in-out;
-    }
-
+    transition: top var(--nav-marker-transition-time) ease-in-out;
 }
 
 @media only screen and (max-width: 960px) {
@@ -247,6 +240,11 @@ h3 {
     /* Disable scrolling while navigation menu open on mobile. */
     body.disable-scroll {
         overflow: hidden;
+    }
+
+    /* Speed up nav marker transition on mobile. */
+    .nav-marker {
+        transition-duration: var(--nav-transition-time);
     }
 
 }
