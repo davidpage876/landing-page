@@ -157,6 +157,12 @@ h3 {
     padding: 15px 5px;
 }
 
+.focus .nav-link {
+    font-size: 31px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
 /* -----------------------------------------------------------
  * Sections & Cards
  */
