@@ -1,5 +1,11 @@
 /* Note: Does not support Internet Explorer. */
 
+/**
+ * @returns {boolean} True if we are on small screen.
+ */
+function hasSmallScreen() {
+    return window.matchMedia('(max-width: 960px)').matches;
+}
 
 /**
  * @description Makes the given section in focus.
@@ -9,10 +15,8 @@
  * @param {string} sectionId - ID of the section to focus on.
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Element[]} navItems - List of navigation items.
- * @param {Element} navContainer - Container for navigation items.
- * @param {Element} navMarker - Marker indicating current nav item.
  */
-function focusSection(sectionId, contentSections, navItems, navContainer, navMarker) {
+function focusSection(sectionId, contentSections, navItems) {
 
     // Remove focus from all sections.
     for (const section of contentSections) {
@@ -60,12 +64,13 @@ function moveNavMarker(navMarker, navContainer, navItem) {
 /**
  * @description Build navigation list items based on given content.
  * @param {Element[]} contentSections - Build navigation based on this list of content sections.
+ * @param {Element} contentContainer - Container for content.
  * @param {Element} navContainer - Created navigation list items are added as children to this container.
  * @param {Element} navMarker - Marker indicating current nav item.
  * @param {Element} navToggle - Button to toggle nav menu.
  * @returns {Element[]} - Returns the newly created navigation items.
  */
-function buildNavigation(contentSections, navContainer, navMarker, navToggle) {
+function buildNavigation(contentSections, contentContainer, navContainer, navMarker, navToggle) {
 
     // Build nav list.
     const navItems = [];
@@ -97,7 +102,7 @@ function buildNavigation(contentSections, navContainer, navMarker, navToggle) {
 
         // When nav item clicked focus on the corresponding section.
         const onSectionClick = focusSection.bind(null,
-            navItem.dataset.sectionId, contentSections, navItems, navContainer, navMarker);
+            navItem.dataset.sectionId, contentSections, navItems);
         navItem.addEventListener('click', onSectionClick, false);
 
         // On transition end move the nav marker to the focused nav item.
@@ -109,18 +114,45 @@ function buildNavigation(contentSections, navContainer, navMarker, navToggle) {
         navItem.addEventListener('transitionend', onTransitionEnd, false);
     }
 
-    // Toggle navigation on menu button click.
+    // Toggle navigation menu visibility on toggle button click.
+    // Simultaneously toggle content visibility on mobile.
     navToggle.addEventListener('click', function onToggleClick() {
         navContainer.classList.remove('hidden');
         navContainer.classList.toggle('fade-out');
+
+        contentContainer.classList.remove('hidden');
+        contentContainer.classList.toggle('fade-in');
     }, false);
 
-    // Hide navigation menu when fade out transition completes.
-    navContainer.addEventListener('transitionend', function onTransitionEnd() {
+    // Hide navigation menu when fade out transition completes
+    // and hide content when fade in transition completes.
+    navContainer.addEventListener('transitionend', function onNavMenuTransitionEnd() {
         if (navContainer.classList.contains('fade-out')) {
             navContainer.classList.add('hidden');
+        } else {
+            contentContainer.classList.add('hidden');
         }
     }, false);
+
+    // When we are on a mobile screen hide the nav menu by default.
+    const updateVisibilityState = function () {
+        if (hasSmallScreen()) {
+            navContainer.classList.add('hidden');
+            navContainer.classList.add('fade-out');
+
+            contentContainer.classList.remove('hidden');
+            contentContainer.classList.add('fade-in');
+        } else {
+            navContainer.classList.remove('hidden');
+            navContainer.classList.remove('fade-out');
+
+            contentContainer.classList.remove('fade-in');
+        }
+    };
+
+    // Set initial visibility state and update on resize events.
+    updateVisibilityState();
+    window.addEventListener('resize', updateVisibilityState, false);
 
     // Return created nav list.
     return navItems;
@@ -134,13 +166,14 @@ function pageSetup() {
     // Build navigation.
     const navContainer = document.getElementById('nav-menu');
     const navMarker = document.getElementById('nav-marker');
+    const contentContainer = document.getElementById('content');
     const contentSections = document.querySelectorAll('#content > .section');
     const navToggle = document.getElementById('nav-toggle');
-    const navItems = buildNavigation(contentSections, navContainer, navMarker, navToggle);
+    const navItems = buildNavigation(contentSections, contentContainer, navContainer, navMarker, navToggle);
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0].id, contentSections, navItems, navContainer, navMarker);
+        focusSection(contentSections[0].id, contentSections, navItems);
     }
 }
 

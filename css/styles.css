@@ -93,16 +93,17 @@ h3 {
     "main";
 }
 
+.site-main {
+    grid-area: main;
+    z-index: 1;
+}
+
 /* Note:
    .site-header occupies same grid area as .site-main.
    This is intentional. */
 .site-header {
     grid-area: main;
-}
-
-.site-main {
-    grid-area: main;
-    z-index: 1;
+    z-index: 2;
 }
 
 @media only screen and (min-width: 960px) {
@@ -196,6 +197,24 @@ h3 {
     left: -7px;
     top: 29px;
     transition: top var(--nav-marker-transition-time) ease-in-out;
+}
+
+/* Hide site content while navigation is displayed on mobile */
+@media only screen and (max-width: 960px) {
+
+    .content {
+        opacity: 0;
+        transition: opacity var(--fade-transition-time) ease-in-out;
+    }
+
+    .fade-in.content {
+        opacity: 1;
+    }
+
+    .hidden.content {
+        visibility: hidden;
+    }
+
 }
 
 /* -----------------------------------------------------------
