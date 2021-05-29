@@ -96,6 +96,7 @@ h3 {
 .site-main {
     grid-area: main;
     z-index: 1;
+    overflow-y: scroll;
 }
 
 /* Note:
@@ -104,6 +105,7 @@ h3 {
 .site-header {
     grid-area: main;
     z-index: 2;
+    width: 100%;
 }
 
 @media only screen and (min-width: 960px) {
@@ -117,6 +119,8 @@ h3 {
 
     .site-header {
         grid-area: side;
+        width: 30%;
+        overflow-y: unset;
     }
 
 }
@@ -169,6 +173,10 @@ h3 {
 
 .hidden.nav-menu {
     visibility: hidden;
+}
+
+.nav-menu__item {
+    max-width: 350px;
 }
 
 .nav-link {
