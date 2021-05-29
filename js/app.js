@@ -114,14 +114,20 @@ function buildNavigation(contentSections, contentContainer, navContainer, navMar
         navItem.addEventListener('transitionend', onTransitionEnd, false);
     }
 
+    // Todo: Move to parameter.
+    const body = document.querySelector('body');
+
     // Toggle navigation menu visibility on toggle button click.
-    // Simultaneously toggle content visibility on mobile.
-    navToggle.addEventListener('click', function onToggleClick() {
+    // Simultaneously toggle content visibility (on mobile).
+    navToggle.addEventListener('click', function onToggleNavMenu() {
         navContainer.classList.remove('hidden');
         navContainer.classList.toggle('fade-out');
 
         contentContainer.classList.remove('hidden');
         contentContainer.classList.toggle('fade-in');
+
+        // Disable scrolling while menu is open (on mobile).
+        body.classList.toggle('disable-scroll');
     }, false);
 
     // Hide navigation menu when fade out transition completes
@@ -142,11 +148,15 @@ function buildNavigation(contentSections, contentContainer, navContainer, navMar
 
             contentContainer.classList.remove('hidden');
             contentContainer.classList.add('fade-in');
+
+            body.classList.remove('disable-scroll');
         } else {
             navContainer.classList.remove('hidden');
             navContainer.classList.remove('fade-out');
 
             contentContainer.classList.remove('fade-in');
+
+            body.classList.remove('disable-scroll');
         }
     };
 

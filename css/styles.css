@@ -215,6 +215,11 @@ h3 {
         visibility: hidden;
     }
 
+    /* Disable scrolling while navigation menu open on mobile. */
+    body.disable-scroll {
+        overflow: hidden;
+    }
+
 }
 
 /* -----------------------------------------------------------
