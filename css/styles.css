@@ -1,6 +1,15 @@
 @import url(normalize.css);
 
 /* -----------------------------------------------------------
+ * Transitions
+ */
+
+:root {
+    --nav-transition-time: 0.2s;
+    --section-transition-time: 1.2s;
+}
+
+/* -----------------------------------------------------------
  * Buttons
  */
 
@@ -155,6 +164,9 @@ h3 {
     border: none;
     background: none;
     padding: 15px 5px;
+    transition:
+        padding var(--nav-transition-time) ease-in-out,
+        font-size var(--nav-transition-time) ease-in-out;
 }
 
 .focus .nav-link {
