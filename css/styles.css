@@ -8,6 +8,7 @@
     --section-transition-time: 1.2s;
     --nav-transition-time: 0.2s;
     --nav-marker-transition-time: calc(var(--section-transition-time) - var(--nav-transition-time));
+    --fade-transition-time: 0.2s;
 }
 
 /* -----------------------------------------------------------
@@ -149,10 +150,6 @@ h3 {
     font-size: 28px;
 }
 
-.hidden.nav-menu {
-    opacity: 0;
-}
-
 .nav-menu {
     position: relative;
     display: flex;
@@ -162,6 +159,11 @@ h3 {
     border-left: dotted 3px #fff;
     margin: 9px 0 0 37px;
     padding: 0 0 0 6px;
+    transition: opacity var(--fade-transition-time) ease-in-out;
+}
+
+.hidden.nav-menu {
+    opacity: 0;
 }
 
 .nav-link {
