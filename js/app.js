@@ -111,7 +111,15 @@ function buildNavigation(contentSections, navContainer, navMarker, navToggle) {
 
     // Toggle navigation on menu button click.
     navToggle.addEventListener('click', function onToggleClick() {
-        navContainer.classList.toggle('hidden');
+        navContainer.classList.remove('hidden');
+        navContainer.classList.toggle('fade-out');
+    }, false);
+
+    // Hide navigation menu when fade out transition completes.
+    navContainer.addEventListener('transitionend', function onTransitionEnd() {
+        if (navContainer.classList.contains('fade-out')) {
+            navContainer.classList.add('hidden');
+        }
     }, false);
 
     // Return created nav list.

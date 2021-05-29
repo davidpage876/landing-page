@@ -162,8 +162,12 @@ h3 {
     transition: opacity var(--fade-transition-time) ease-in-out;
 }
 
-.hidden.nav-menu {
+.fade-out.nav-menu {
     opacity: 0;
+}
+
+.hidden.nav-menu {
+    visibility: hidden;
 }
 
 .nav-link {
