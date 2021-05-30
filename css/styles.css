@@ -328,7 +328,7 @@ h3 {
 }
 
 .gradient-bg--greenish .gradient--top {
-	stop-color: #004C34;
+	stop-color: #273f00;
 }
 
 .gradient-bg--greenish .gradient--bottom {
@@ -336,19 +336,35 @@ h3 {
 }
 
 .gradient-bg--redish .gradient--top {
-	stop-color: #680200;
+	stop-color: #570f0e;
 }
 
 .gradient-bg--redish .gradient--bottom {
-	stop-color: #BB6A00;
+	stop-color: #b36500b0;
 }
 
 .gradient-bg--aquaish .gradient--top {
-	stop-color: #0073a0;
+	stop-color: #008bc2;
 }
 
 .gradient-bg--aquaish .gradient--bottom {
 	stop-color: #007544;
+}
+
+.gradient-bg--purplish .gradient--top {
+	stop-color: #67028f;
+}
+
+.gradient-bg--purplish .gradient--bottom {
+	stop-color: #8a6624;
+}
+
+.gradient-bg--yellowish .gradient--top {
+	stop-color: #814e0b;
+}
+
+.gradient-bg--yellowish .gradient--bottom {
+	stop-color: #9c8d00;
 }
 
 /* -----------------------------------------------------------
