@@ -96,9 +96,10 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         for (const navItem of this.navItems) {
 
             // When nav item clicked focus on the corresponding section.
-            const onSectionClick = focusSection.bind(null,
-                navItem.dataset.sectionId, contentContainer, contentSections, this, this.body, true);
-            navItem.addEventListener('click', onSectionClick, false);
+            navItem.addEventListener('click', () => {
+                focusSection(navItem.dataset.sectionId, contentContainer, contentSections,
+                    this, this.body, true);
+            }, false);
 
             // On transition end move the nav marker to the focused nav item.
             navItem.addEventListener('transitionend', () => {
@@ -125,10 +126,13 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         updateVisibilityState();
         window.addEventListener('resize', updateVisibilityState, false);
 
-        // Open the nav menu on mouse over and monitor if mouse is over the nav menu hotspot.
+        // Monitor if mouse is over the nav menu hotspot.
+        // Also, open the nav menu on mouse over when it is fading out (desktop only).
         this.navHotspot.addEventListener('mouseover', () => {
             this._isCursorOverNavMenu = true;
-            this.openNavMenu(contentContainer, true);
+            if (!this.navContainer.classList.contains('hidden') && !hasSmallScreen()) {
+                this.openNavMenu(contentContainer, true);
+            }
         }, false);
         this.navHotspot.addEventListener('mouseleave', () => {
             this._isCursorOverNavMenu = false;
@@ -248,7 +252,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @param {Element} contentContainer The main content. Use for transitions on mobile.
      */
     this.resetTimeout = function (contentContainer) {
-        const TIMEOUT_TIME = 3000;
+        const TIMEOUT_TIME = 2000;
 
         window.clearTimeout(this._timeOutId);
         const onTimeout = () => {
