@@ -302,17 +302,27 @@ h3 {
  * Background gradients
  */
 
+ body {
+    background: #3400C7; /* last fallback */
+ }
+
 .gradient-bg {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: #3400C7; /* fallback */
 }
 
+.gradient-bg .gradient--top,
+.gradient-bg .gradient--bottom {
+    transition: stop-color var(--section-transition-time) linear;
+}
+
+.gradient-bg .gradient--top,
 .gradient-bg--bluish .gradient--top {
 	stop-color: #3400C7;
 }
 
+.gradient-bg .gradient--bottom,
 .gradient-bg--bluish .gradient--bottom {
 	stop-color: #6800A3;
 }
