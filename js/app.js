@@ -96,7 +96,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         for (const navItem of this.navItems) {
 
             // When nav item clicked focus on the corresponding section.
-            navItem.addEventListener('click', () => {
+            navItem.addEventListener('click', (event) => {
+                event.preventDefault();
+
                 focusSection(navItem.dataset.sectionId, contentContainer, contentSections,
                     this, this.body, true);
             }, false);
@@ -353,6 +355,12 @@ function focusSection(sectionId, contentContainer, contentSections, nav, body, u
         const gradientClass = `gradient-bg--${sectionGradientName}`;
         gradientBg.classList.add(gradientClass);
         body.classList.add(gradientClass);
+    }
+
+    // Scroll to the associated section.
+    if (section) {
+        const { x, y, width, height } = section.getBoundingClientRect();
+        window.scrollTo(x, window.scrollY + y);
     }
 }
 
