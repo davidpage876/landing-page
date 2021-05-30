@@ -59,6 +59,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
     this._onNavTransitionEnd = null;
     this._onContentTransitionEnd = null;
     this._timeOutId = null;
+    this._isCursorOverNavMenu = true;
 
     /**
      * @description Build navigation list items based on content.
@@ -124,6 +125,14 @@ function Navigation(navContainer, navToggle, navMarker, body) {
         };
         updateVisibilityState();
         window.addEventListener('resize', updateVisibilityState, false);
+
+        // Monitor if the cursor is over the nav menu.
+        navContainer.addEventListener('mouseover', () => {
+            this._isCursorOverNavMenu = true;
+        }, false);
+        navContainer.addEventListener('mouseleave', () => {
+            this._isCursorOverNavMenu = false;
+        }, false);
     }
 
     /**
@@ -239,12 +248,23 @@ function Navigation(navContainer, navToggle, navMarker, body) {
      * @param {Element} contentContainer The main content. Use for transitions on mobile.
      */
     this.resetTimeout = function (contentContainer) {
-        const TIMEOUT_TIME = 3000.0;
+        const TIMEOUT_TIME = 3600;
 
         window.clearTimeout(this._timeOutId);
-        this._timeOutId = window.setTimeout(() => {
-            this.closeNavMenu(contentContainer, true);
-        }, TIMEOUT_TIME);
+        const onTimeout = () => {
+
+            // Reset timer if the cursor is over the menu, otherwise close the menu.
+            if (!hasSmallScreen()) {
+                if (this._isCursorOverNavMenu) {
+                    console.log("waiting");
+                    this._timeOutId = window.setTimeout(onTimeout, TIMEOUT_TIME);
+                } else {
+                    console.log("closing");
+                    this.closeNavMenu(contentContainer, true);
+                }
+            }
+        };
+        this._timeOutId = window.setTimeout(onTimeout, TIMEOUT_TIME);
     }
 }
 
