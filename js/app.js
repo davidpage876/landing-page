@@ -58,6 +58,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
     this.navItems = [];
     this._onNavTransitionEnd = null;
     this._onContentTransitionEnd = null;
+    this._timeOut = null;
 
     /**
      * @description Build navigation list items based on content.
@@ -169,6 +170,9 @@ function Navigation(navContainer, navToggle, navMarker, body) {
         if (fade) {
             this.disableInvisibleOnTransitionEnd(contentContainer);
         }
+
+        // Hide the menu after a while of inactivity.
+        this.resetTimeout(contentContainer);
     }
 
     /**
@@ -228,6 +232,19 @@ function Navigation(navContainer, navToggle, navMarker, body) {
         contentContainer.removeEventListener('transitionend', this._onContentTransitionEnd, false);
         this._onContentTransitionEnd = onContentTransitionEnd.bind(null, contentContainer);
         contentContainer.addEventListener('transitionend', this._onContentTransitionEnd, false);
+    }
+
+    /**
+     * @description Reset timeout timer to the initial time.
+     * @param {Element} contentContainer The main content. Use for transitions on mobile.
+     */
+    this.resetTimeout = function (contentContainer) {
+        const TIMEOUT_TIME = 3000.0;
+        this._timeOut = () => {
+            this.closeNavMenu(contentContainer, true);
+            window.clearTimeout(this._timeOut);
+        };
+        window.setTimeout(this._timeOut, TIMEOUT_TIME);
     }
 }
 
