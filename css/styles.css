@@ -9,7 +9,7 @@
     --nav-transition-time: 0.2s;
     --nav-marker-transition-time: calc(var(--section-transition-time) - var(--nav-transition-time));
     --fade-transition-time: 0.2s;
-    --slow-fade-transition-time: 1.7s;
+    --slow-fade-transition-time: 1.1s;
 }
 
 /* -----------------------------------------------------------

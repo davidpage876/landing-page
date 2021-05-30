@@ -127,12 +127,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         window.addEventListener('resize', updateVisibilityState, false);
 
         // Monitor if mouse is over the nav menu hotspot.
-        // Also, open the nav menu on mouse over when it is fading out (desktop only).
         this.navHotspot.addEventListener('mouseover', () => {
             this._isCursorOverNavMenu = true;
-            if (!this.navContainer.classList.contains('hidden') && !hasSmallScreen()) {
-                this.openNavMenu(contentContainer, true);
-            }
         }, false);
         this.navHotspot.addEventListener('mouseleave', () => {
             this._isCursorOverNavMenu = false;
@@ -266,7 +262,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @param {Element} contentContainer The main content. Use for transitions on mobile.
      */
     this.resetTimeout = function (contentContainer) {
-        const TIMEOUT_TIME = 2000;
+        const TIMEOUT_TIME = 1000;
 
         window.clearTimeout(this._timeOutId);
         const onTimeout = () => {
