@@ -12,6 +12,32 @@ function hasSmallScreen() {
     return window.matchMedia('(max-width: 960px)').matches;
 }
 
+/**
+ * @description Hides invisble nav menu from interaction when transition ends.
+ * @param {Element} navContainer The nav menu.
+ */
+function onNavTransitionEnd(navContainer) {
+    if (navContainer.classList.contains('open')) {
+        navContainer.classList.remove('fade');
+    } else {
+        navContainer.classList.remove('fade');
+        navContainer.classList.add('hidden');
+    }
+}
+
+/**
+ * @description Hides invisble main content from interaction when transition ends.
+ * @param {*} contentContainer The main content.
+ */
+function onContentTransitionEnd(contentContainer) {
+    if (contentContainer.classList.contains('open')) {
+        contentContainer.classList.remove('fade');
+    } else {
+        contentContainer.classList.remove('fade');
+        contentContainer.classList.add('hidden');
+    }
+}
+
 /* -------------------------------------------------------------------------
  * Object constructors
  */
@@ -30,6 +56,8 @@ function Navigation(navContainer, navToggle, navMarker, body) {
     this.navMarker = navMarker;
     this.body = body;
     this.navItems = [];
+    this._onNavTransitionEnd = null;
+    this._onContentTransitionEnd = null;
 
     /**
      * @description Build navigation list items based on content.
@@ -68,7 +96,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
 
             // When nav item clicked focus on the corresponding section.
             const onSectionClick = focusSection.bind(null,
-                navItem.dataset.sectionId, contentContainer, contentSections, this, this.body);
+                navItem.dataset.sectionId, contentContainer, contentSections, this, this.body, true);
             navItem.addEventListener('click', onSectionClick, false);
 
             // On transition end move the nav marker to the focused nav item.
@@ -79,51 +107,98 @@ function Navigation(navContainer, navToggle, navMarker, body) {
             }, false);
         }
 
-        // Toggle navigation menu visibility on toggle button click.
-        // Simultaneously toggle content visibility (on mobile).
+        // Toggle navigation visibility on menu button clicked.
         this.navToggle.addEventListener('click', () => {
-            this.navContainer.classList.remove('hidden');
-            this.navContainer.classList.toggle('fade-out');
-
-            contentContainer.classList.remove('hidden');
-            contentContainer.classList.toggle('fade-in');
-
-            // Disable scrolling while menu is open (on mobile).
-            this.body.classList.toggle('disable-scroll');
-        }, false);
-
-        // Hide navigation menu when fade out transition completes
-        // and hide content when fade in transition completes.
-        this.navContainer.addEventListener('transitionend', () => {
-            if (this.navContainer.classList.contains('fade-out')) {
-                this.navContainer.classList.add('hidden');
-            } else {
-                contentContainer.classList.add('hidden');
-            }
+            this.toggleNavMenu(contentContainer, true);
         }, false);
 
         // Update visibility state on start and on resize events.
         // When we are on a mobile screen hide the nav menu by default.
         const updateVisibilityState = () => {
             if (hasSmallScreen()) {
-                this.navContainer.classList.add('hidden');
-                this.navContainer.classList.add('fade-out');
-
-                contentContainer.classList.remove('hidden');
-                contentContainer.classList.add('fade-in');
-
-                this.body.classList.remove('disable-scroll');
+                this.closeNavMenu(contentContainer, false);
             } else {
-                this.navContainer.classList.remove('hidden');
-                this.navContainer.classList.remove('fade-out');
-
-                contentContainer.classList.remove('fade-in');
-
-                this.body.classList.remove('disable-scroll');
+                this.openNavMenu(contentContainer, false);
             }
         };
         updateVisibilityState();
         window.addEventListener('resize', updateVisibilityState, false);
+    }
+
+    /**
+     * @description Toggles navigation menu visibility.
+     * Main content is hidden while the menu is open (mobile only).
+     * @param {Element} contentContainer - Used to hide content while menu is open.
+     * @param {boolean} fade - Should a fade transition be used?
+     */
+    this.toggleNavMenu = function (contentContainer, fade) {
+        if (this.navContainer.classList.contains('open')) {
+            this.closeNavMenu(contentContainer, fade);
+        } else {
+            this.openNavMenu(contentContainer, fade);
+        }
+    }
+
+    /**
+     * @description Makes the navigation menu visible.
+     * Main content is hidden while the menu is open (mobile only).
+     * @param {Element} contentContainer - Used to hide content while menu is open.
+     * @param {boolean} fade - Should a fade transition be used?
+     */
+    this.openNavMenu = function (contentContainer, fade) {
+        const mobile = hasSmallScreen();
+
+        this.navContainer.classList.add('open');
+        this.navContainer.classList.remove('hidden');
+        if (fade) {
+            this.navContainer.classList.add('fade');
+        }
+
+        contentContainer.classList.remove('open');
+        contentContainer.classList.remove('hidden');
+        if (fade && mobile) {
+            contentContainer.classList.add('fade');
+        }
+
+        // Prevent page scrolling while menu open (mobile only).
+        if (mobile) {
+            this.body.classList.add('disable-scroll');
+        }
+
+        // Hide invisible elements once transitions are complete.
+        if (fade) {
+            this.disableInvisibleOnTransitionEnd(contentContainer);
+        }
+    }
+
+    /**
+     * @description Makes the navigation menu hidden.
+     * Main content is made visible as menu closes (mobile only).
+     * @param {Element} contentContainer - Used to make content visible as menu closes.
+     * @param {boolean} fade - Should a fade transition be used?
+     */
+    this.closeNavMenu = function (contentContainer, fade) {
+        const mobile = hasSmallScreen();
+
+        this.navContainer.classList.remove('open');
+        this.navContainer.classList.remove('hidden');
+        if (fade) {
+            this.navContainer.classList.add('fade');
+        }
+
+        contentContainer.classList.add('open');
+        contentContainer.classList.remove('hidden');
+        if (fade && mobile) {
+            contentContainer.classList.add('fade');
+        }
+
+        // Re-enable page scrolling.
+        this.body.classList.remove('disable-scroll');
+
+        // Hide invisible elements once transitions are complete.
+        if (fade) {
+            this.disableInvisibleOnTransitionEnd(contentContainer);
+        }
     }
 
     /**
@@ -138,6 +213,21 @@ function Navigation(navContainer, navToggle, navMarker, body) {
         const markerY = itemY - containerY + itemHeight / 2 - markerHeight / 2;
         this.navMarker.style.top = `${markerY}px`;
         /*console.log(`containerY:${containerY} itemY:${itemY} itemHeight:${itemHeight} markerHeight:${markerHeight} markerY:${markerY}`);*/
+    }
+
+    /**
+     * @description Prevent interaction with nav menu and main content when they are invisible.
+     * Used to hide elements after "fade-out" transitions end.
+     * @param {Element} contentContainer The main content.
+     */
+    this.disableInvisibleOnTransitionEnd = function (contentContainer) {
+        this.navContainer.removeEventListener('transitionend', this._onNavTransitionEnd, false);
+        this._onNavTransitionEnd = onNavTransitionEnd.bind(null, this.navContainer);
+        this.navContainer.addEventListener('transitionend', this._onNavTransitionEnd, false);
+
+        contentContainer.removeEventListener('transitionend', this._onContentTransitionEnd, false);
+        this._onContentTransitionEnd = onContentTransitionEnd.bind(null, contentContainer);
+        contentContainer.addEventListener('transitionend', this._onContentTransitionEnd, false);
     }
 }
 
@@ -155,8 +245,9 @@ function Navigation(navContainer, navToggle, navMarker, body) {
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Navigation} nav - Navigation menu.
  * @param {Element} body - HTML body element.
+ * @param {boolean} useTransitions - Should transitions be used.
  */
-function focusSection(sectionId, contentContainer, contentSections, nav, body) {
+function focusSection(sectionId, contentContainer, contentSections, nav, body, useTransitions) {
 
     // Remove focus from all sections.
     for (const section of contentSections) {
@@ -184,15 +275,10 @@ function focusSection(sectionId, contentContainer, contentSections, nav, body) {
         navItem.classList.add('focus');
     }
 
-
+    // Close the nav menu if on mobile.
     if (hasSmallScreen()) {
-        nav.navContainer.classList.add('fade-out');
-        contentContainer.classList.remove('hidden');
-        contentContainer.classList.add('fade-in');
-        body.classList.remove('disable-scroll');
+        nav.closeNavMenu(contentContainer, useTransitions);
     }
-
-
 
     // Switch background gradient.
     if (section) {
@@ -212,8 +298,6 @@ function focusSection(sectionId, contentContainer, contentSections, nav, body) {
         gradientBg.classList.add(gradientClass);
         body.classList.add(gradientClass);
     }
-
-
 }
 
 /**
@@ -235,7 +319,7 @@ function pageSetup() {
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0].id, contentContainer, contentSections, nav, body);
+        focusSection(contentSections[0].id, contentContainer, contentSections, nav, body, false);
     }
 }
 

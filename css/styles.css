@@ -167,7 +167,6 @@ h3 {
     border-left: dotted 3px #fff;
     margin: 9px 0 0 37px;
     padding: 0 0 0 6px;
-    transition: opacity var(--fade-transition-time) ease-in-out;
 
     /* Allow scrolling on overflow. */
     overflow-y: scroll;
@@ -181,7 +180,11 @@ h3 {
     height: 0;
 }
 
-.fade-out.nav-menu {
+.nav-menu.fade {
+    transition: opacity var(--fade-transition-time) ease-in-out;
+}
+
+.nav-menu:not(.open) {
     opacity: 0;
 }
 
@@ -226,10 +229,13 @@ h3 {
     /* Hide site content while navigation is displayed on mobile. */
     .content {
         opacity: 0;
+    }
+
+    .content.fade {
         transition: opacity var(--fade-transition-time) ease-in-out;
     }
 
-    .fade-in.content {
+    .content.open {
         opacity: 1;
     }
 
