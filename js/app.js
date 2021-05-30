@@ -58,7 +58,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
     this.navItems = [];
     this._onNavTransitionEnd = null;
     this._onContentTransitionEnd = null;
-    this._timeOut = null;
+    this._timeOutId = null;
 
     /**
      * @description Build navigation list items based on content.
@@ -240,11 +240,11 @@ function Navigation(navContainer, navToggle, navMarker, body) {
      */
     this.resetTimeout = function (contentContainer) {
         const TIMEOUT_TIME = 3000.0;
-        this._timeOut = () => {
+
+        window.clearTimeout(this._timeOutId);
+        this._timeOutId = window.setTimeout(() => {
             this.closeNavMenu(contentContainer, true);
-            window.clearTimeout(this._timeOut);
-        };
-        window.setTimeout(this._timeOut, TIMEOUT_TIME);
+        }, TIMEOUT_TIME);
     }
 }
 
@@ -333,6 +333,13 @@ function pageSetup() {
     const contentContainer = document.getElementById('content');
     const contentSections = document.querySelectorAll('#content > .section');
     nav.buildNavigation(contentContainer, contentSections);
+
+    // Open the nav menu on scroll (large screens only).
+    window.addEventListener('scroll', () => {
+        if (!hasSmallScreen()) {
+            nav.openNavMenu(contentContainer, true);
+        }
+    }, false)
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
