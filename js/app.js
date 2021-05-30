@@ -137,6 +137,11 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         this.navHotspot.addEventListener('mouseleave', () => {
             this._isCursorOverNavMenu = false;
         }, false);
+
+        // Hide the nav menu initially on mobile.
+        if (hasSmallScreen()) {
+            this.closeNavMenu(contentContainer, false);
+        }
     }
 
     /**
@@ -198,9 +203,11 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         const mobile = hasSmallScreen();
 
         this.navContainer.classList.remove('open');
-        this.navContainer.classList.remove('hidden');
         if (fade) {
+            this.navContainer.classList.remove('hidden');
             this.navContainer.classList.add('fade');
+        } else {
+            this.navContainer.classList.add('hidden');
         }
 
         contentContainer.classList.add('open');
