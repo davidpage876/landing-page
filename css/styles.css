@@ -9,6 +9,7 @@
     --nav-transition-time: 0.2s;
     --nav-marker-transition-time: calc(var(--section-transition-time) - var(--nav-transition-time));
     --fade-transition-time: 0.2s;
+    --slow-fade-transition-time: 1.7s;
 }
 
 /* -----------------------------------------------------------
@@ -182,6 +183,10 @@ h3 {
 
 .nav-menu.fade {
     transition: opacity var(--fade-transition-time) ease-in-out;
+}
+
+.nav-menu.fade--slow {
+    transition-duration: var(--slow-fade-transition-time);
 }
 
 .nav-menu:not(.open) {

@@ -17,23 +17,20 @@ function hasSmallScreen() {
  * @param {Element} navContainer The nav menu.
  */
 function onNavTransitionEnd(navContainer) {
-    if (navContainer.classList.contains('open')) {
-        navContainer.classList.remove('fade');
-    } else {
-        navContainer.classList.remove('fade');
+    navContainer.classList.remove('fade');
+    navContainer.classList.remove('fade--slow');
+    if (!navContainer.classList.contains('open')) {
         navContainer.classList.add('hidden');
     }
 }
 
 /**
  * @description Hides invisble main content from interaction when transition ends.
- * @param {*} contentContainer The main content.
+ * @param {Element} contentContainer The main content.
  */
 function onContentTransitionEnd(contentContainer) {
-    if (contentContainer.classList.contains('open')) {
-        contentContainer.classList.remove('fade');
-    } else {
-        contentContainer.classList.remove('fade');
+    contentContainer.classList.remove('fade');
+    if (!contentContainer.classList.contains('open')) {
         contentContainer.classList.add('hidden');
     }
 }
@@ -126,9 +123,10 @@ function Navigation(navContainer, navToggle, navMarker, body) {
         updateVisibilityState();
         window.addEventListener('resize', updateVisibilityState, false);
 
-        // Monitor if the cursor is over the nav menu.
+        // Open the nav menu on mouse over and monitor if mouse is over the nav menu.
         navContainer.addEventListener('mouseover', () => {
             this._isCursorOverNavMenu = true;
+            this.openNavMenu(contentContainer, true);
         }, false);
         navContainer.addEventListener('mouseleave', () => {
             this._isCursorOverNavMenu = false;
@@ -177,7 +175,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
 
         // Hide invisible elements once transitions are complete.
         if (fade) {
-            this.disableInvisibleOnTransitionEnd(contentContainer);
+            this.handleTransitionEnd(contentContainer);
         }
 
         // Hide the menu after a while of inactivity.
@@ -210,7 +208,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
 
         // Hide invisible elements once transitions are complete.
         if (fade) {
-            this.disableInvisibleOnTransitionEnd(contentContainer);
+            this.handleTransitionEnd(contentContainer);
         }
     }
 
@@ -229,11 +227,11 @@ function Navigation(navContainer, navToggle, navMarker, body) {
     }
 
     /**
-     * @description Prevent interaction with nav menu and main content when they are invisible.
-     * Used to hide elements after "fade-out" transitions end.
+     * @description Handles transition end behaviour.
+     * Prevents interaction with nav menu and main content when they are invisible.
      * @param {Element} contentContainer The main content.
      */
-    this.disableInvisibleOnTransitionEnd = function (contentContainer) {
+    this.handleTransitionEnd = function (contentContainer) {
         this.navContainer.removeEventListener('transitionend', this._onNavTransitionEnd, false);
         this._onNavTransitionEnd = onNavTransitionEnd.bind(null, this.navContainer);
         this.navContainer.addEventListener('transitionend', this._onNavTransitionEnd, false);
@@ -248,7 +246,7 @@ function Navigation(navContainer, navToggle, navMarker, body) {
      * @param {Element} contentContainer The main content. Use for transitions on mobile.
      */
     this.resetTimeout = function (contentContainer) {
-        const TIMEOUT_TIME = 3600;
+        const TIMEOUT_TIME = 3000;
 
         window.clearTimeout(this._timeOutId);
         const onTimeout = () => {
@@ -256,10 +254,9 @@ function Navigation(navContainer, navToggle, navMarker, body) {
             // Reset timer if the cursor is over the menu, otherwise close the menu.
             if (!hasSmallScreen()) {
                 if (this._isCursorOverNavMenu) {
-                    console.log("waiting");
                     this._timeOutId = window.setTimeout(onTimeout, TIMEOUT_TIME);
                 } else {
-                    console.log("closing");
+                    this.navContainer.classList.add('fade--slow');
                     this.closeNavMenu(contentContainer, true);
                 }
             }
