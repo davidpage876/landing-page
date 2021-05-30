@@ -154,19 +154,23 @@ h3 {
     background: #aaa;
 }
 
-.nav-toggle--highlight {
-    box-shadow: 0 0 13px rgb(255 255 255 / 60%);
-    animation: nav-toggle--glow 3s ease-in-out infinite alternate;
-}
+@media only screen and (min-width: 960px) {
 
-@keyframes nav-toggle--glow {
-    from {
-        box-shadow: 0 0 6px rgb(255 255 255 / 0%);
+    .nav-toggle--highlight {
+        box-shadow: 0 0 13px rgb(255 255 255 / 60%);
+        animation: nav-toggle--glow 3s ease-in-out infinite alternate;
     }
 
-    to {
-        box-shadow: 0 0 12px rgb(255 255 255 / 70%);
+    @keyframes nav-toggle--glow {
+        from {
+            box-shadow: 0 0 8px rgb(255 255 255 / 0%);
+        }
+
+        to {
+            box-shadow: 0 0 15px rgb(255 255 255 / 70%);
+        }
     }
+
 }
 
 .nav-toggle__icon {
