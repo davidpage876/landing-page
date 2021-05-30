@@ -45,12 +45,14 @@ function onContentTransitionEnd(contentContainer) {
  * @param {Element} navContainer - Container for the nav items.
  * @param {Element} navToggle - Button to toggle nav menu.
  * @param {Element} navMarker - Marker used to indicate current nav item.
+ * @param {Element} navHotspot - Cursor area that covers the nav menu.
  * @param {Element} body - HTML body element. Used to prevent page scrolling in mobile while nav menu open.
  */
-function Navigation(navContainer, navToggle, navMarker, body) {
+function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.navContainer = navContainer;
     this.navToggle = navToggle;
     this.navMarker = navMarker;
+    this.navHotspot = navHotspot;
     this.body = body;
     this.navItems = [];
     this._onNavTransitionEnd = null;
@@ -123,12 +125,12 @@ function Navigation(navContainer, navToggle, navMarker, body) {
         updateVisibilityState();
         window.addEventListener('resize', updateVisibilityState, false);
 
-        // Open the nav menu on mouse over and monitor if mouse is over the nav menu.
-        navContainer.addEventListener('mouseover', () => {
+        // Open the nav menu on mouse over and monitor if mouse is over the nav menu hotspot.
+        this.navHotspot.addEventListener('mouseover', () => {
             this._isCursorOverNavMenu = true;
             this.openNavMenu(contentContainer, true);
         }, false);
-        navContainer.addEventListener('mouseleave', () => {
+        this.navHotspot.addEventListener('mouseleave', () => {
             this._isCursorOverNavMenu = false;
         }, false);
     }
@@ -343,8 +345,9 @@ function pageSetup() {
     const navContainer = document.getElementById('nav-menu');
     const navToggle = document.getElementById('nav-toggle');
     const navMarker = document.getElementById('nav-marker');
+    const navHotspot = document.getElementById('site-header');
     const body = document.querySelector('body');
-    const nav = new Navigation(navContainer, navToggle, navMarker, body);
+    const nav = new Navigation(navContainer, navToggle, navMarker, navHotspot, body);
 
     // Build navigation from content.
     const contentContainer = document.getElementById('content');
