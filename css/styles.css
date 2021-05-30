@@ -299,36 +299,46 @@ h3 {
 }
 
 /* -----------------------------------------------------------
- * Background gradient
+ * Background gradients
  */
 
 .gradient-bg {
-    position: absolute;
-    background: #3400C7;
-    left: 0;
-    top: 0;
+    position: fixed;
     width: 100%;
     height: 100%;
+    background: #3400C7; /* fallback */
 }
 
-.gradient-bg--bluish {
-    background-color: #3400C7; /* Fallback */
-    background: linear-gradient(#3400C7, #6800A3) fixed;
+.gradient-bg--bluish .gradient--top {
+	stop-color: #3400C7;
 }
 
-.gradient-bg--greenish {
-    background-color: #004C34; /* Fallback */
-    background: linear-gradient(#004C34, #176D00) fixed;
+.gradient-bg--bluish .gradient--bottom {
+	stop-color: #6800A3;
 }
 
-.gradient-bg--redish {
-    background-color: #680200; /* Fallback */
-    background: linear-gradient(#680200, #BB6A00) fixed;
+.gradient-bg--greenish .gradient--top {
+	stop-color: #004C34;
 }
 
-.gradient-bg--aquaish {
-    background-color: #0090c7; /* Fallback */
-    background: linear-gradient(#0090c7, #00a35f) fixed;
+.gradient-bg--greenish .gradient--bottom {
+	stop-color: #176D00;
+}
+
+.gradient-bg--redish .gradient--top {
+	stop-color: #680200;
+}
+
+.gradient-bg--redish .gradient--bottom {
+	stop-color: #BB6A00;
+}
+
+.gradient-bg--aquaish .gradient--top {
+	stop-color: #0073a0;
+}
+
+.gradient-bg--aquaish .gradient--bottom {
+	stop-color: #007544;
 }
 
 /* -----------------------------------------------------------
