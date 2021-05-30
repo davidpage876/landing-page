@@ -302,9 +302,9 @@ h3 {
  * Background gradients
  */
 
- body {
-    background: #3400C7; /* last fallback */
- }
+.bg {
+    background: #3400C7; /* default fallback */
+}
 
 .gradient-bg {
     position: fixed;
@@ -317,6 +317,7 @@ h3 {
     transition: stop-color var(--section-transition-time) linear;
 }
 
+/* Bluish */
 .gradient-bg .gradient--top,
 .gradient-bg--bluish .gradient--top {
 	stop-color: #3400C7;
@@ -327,6 +328,11 @@ h3 {
 	stop-color: #6800A3;
 }
 
+.bg.gradient-bg--bluish {
+	background: #6800A3;
+}
+
+/* Greenish */
 .gradient-bg--greenish .gradient--top {
 	stop-color: #273f00;
 }
@@ -335,6 +341,11 @@ h3 {
 	stop-color: #176D00;
 }
 
+.bg.gradient-bg--greenish {
+	background: #176D00;
+}
+
+/* Redish */
 .gradient-bg--redish .gradient--top {
 	stop-color: #570f0e;
 }
@@ -343,6 +354,11 @@ h3 {
 	stop-color: #b36500b0;
 }
 
+.bg.gradient-bg--redish {
+	background: #b36500b0;
+}
+
+/* Aquaish */
 .gradient-bg--aquaish .gradient--top {
 	stop-color: #008bc2;
 }
@@ -351,6 +367,11 @@ h3 {
 	stop-color: #007544;
 }
 
+.bg.gradient-bg--aquaish {
+	background: #007544;
+}
+
+/* Purplish */
 .gradient-bg--purplish .gradient--top {
 	stop-color: #67028f;
 }
@@ -359,12 +380,21 @@ h3 {
 	stop-color: #8a6624;
 }
 
+.bg.gradient-bg--purplish {
+	background: #8a6624;
+}
+
+/* Yellowish */
 .gradient-bg--yellowish .gradient--top {
 	stop-color: #814e0b;
 }
 
 .gradient-bg--yellowish .gradient--bottom {
 	stop-color: #9c8d00;
+}
+
+.bg.gradient-bg--yellowish {
+	background: #9c8d00;
 }
 
 /* -----------------------------------------------------------

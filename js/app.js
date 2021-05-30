@@ -202,12 +202,15 @@ function focusSection(sectionId, contentContainer, contentSections, nav, body) {
         for (const className of gradientBg.classList) {
             if (/^gradient-bg--/.test(className)) {
                 gradientBg.classList.remove(className);
+                body.classList.remove(className);
             }
         }
 
         // Use the section's gradient.
         const sectionGradientName = section.dataset.bg.toLowerCase();
-        gradientBg.classList.add(`gradient-bg--${sectionGradientName}`);
+        const gradientClass = `gradient-bg--${sectionGradientName}`;
+        gradientBg.classList.add(gradientClass);
+        body.classList.add(gradientClass);
     }
 
 
