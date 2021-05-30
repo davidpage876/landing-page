@@ -136,7 +136,6 @@ h3 {
  * Navigation Menu
  */
 
- /* TODO: Use a JS based solution instead for better performance on mobile */
 .site-header {
     position: fixed;
 }
