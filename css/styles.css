@@ -150,6 +150,10 @@ h3 {
     margin: 27px 0 0 19px;
 }
 
+.nav-toggle:hover {
+    background: #aaa;
+}
+
 .nav-toggle__icon {
     color: #000;
     vertical-align: middle;
@@ -210,6 +214,10 @@ h3 {
     transition:
         padding var(--nav-transition-time) ease-in-out,
         font-size var(--nav-transition-time) ease-in-out;
+}
+
+.nav-link:hover {
+    color: #aaa;
 }
 
 .focus .nav-link {
