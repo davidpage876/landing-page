@@ -35,12 +35,26 @@ function onContentTransitionEnd(contentContainer) {
     }
 }
 
+/**
+ * @description Get the section with a given ID.
+ * @param {string} sectionId - ID of the section to search for.
+ * @param {Element[]} contentSections - List of sections to search.
+ * @returns {Element} - The section element found. Returns undefined if not found.
+ */
+function getSectionWithId(sectionId, contentSections) {
+    for (const section of contentSections) {
+        if (section.id === sectionId) {
+            return section;
+        }
+    }
+    return undefined;
+}
 
 /**
  * @description Converts a time value in seconds to milliseconds.
- * @param {string|number} seconds Value to convert from.
+ * @param {string|number} seconds - Value to convert from.
  * Could be a string (e.g. '3.2s') or a number (e.g. 3.2).
- * @returns {number} Converted value in milliseconds.
+ * @returns {number} - Converted value in milliseconds.
  */
 function secondsToMs(seconds) {
     const secondValue = parseFloat(seconds);
@@ -131,8 +145,10 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             navItem.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                focusSection(navItem.dataset.sectionId, contentContainer, contentSections,
-                    this, this.body, true);
+                const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
+                if (section) {
+                    focusSection(section, contentContainer, contentSections, this, this.body, true);
+                }
             }, false);
 
             // On transition end move the nav marker to the focused nav item.
@@ -330,39 +346,31 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  * The section in focus has the class 'focus' added to it.
  * 'focus' is also added to the associated navigation list item.
  * All other sections and navigation items lose focus.
- * @param {string} sectionId - ID of the section to focus on.
+ * @param {string} section - Section to focus on.
  * @param {Element} contentContainer - Container for content.
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Navigation} nav - Navigation menu.
  * @param {Element} body - HTML body element.
  * @param {boolean} useTransitions - Should transitions be used.
  */
-function focusSection(sectionId, contentContainer, contentSections, nav, body, useTransitions) {
+function focusSection(section, contentContainer, contentSections, nav, body, useTransitions) {
 
-    // Remove focus from all sections.
-    for (const section of contentSections) {
-        section.classList.remove('focus');
+    // Remove focus from all sections except for the current one.
+    for (const s of contentSections) {
+        if (s.id === section.id) {
+            s.classList.add('focus');
+        } else {
+            s.classList.remove('focus');
+        }
     }
 
-    // Remove focus from all nav items.
+    // Remove focus from all nav items except for the current one.
     for (const item of nav.navItems) {
-        item.classList.remove('focus');
-    }
-
-    // Find the section with sectionId ID and focus on it.
-    const section = Array.from(contentSections).find(function (s) {
-        return s.id === sectionId;
-    });
-    if (section) {
-        section.classList.add('focus');
-    }
-
-    // Find the navigation item with data-section-id matching our sectionId and focus on it.
-    const navItem = Array.from(nav.navItems).find(function (item) {
-        return item.dataset.sectionId === sectionId;
-    });
-    if (navItem) {
-        navItem.classList.add('focus');
+        if (item.dataset.sectionId === section.id) {
+            item.classList.add('focus');
+        } else {
+            item.classList.remove('focus');
+        }
     }
 
     // Close the nav menu if on mobile.
@@ -417,16 +425,26 @@ function pageSetup() {
     const contentSections = document.querySelectorAll('#content > .section');
     nav.buildNavigation(contentContainer, contentSections);
 
-    // Open the nav menu on scroll (large screens only).
+    // Set up scroll events.
+    /*const sectionInView = contentSections[0];
     window.addEventListener('scroll', () => {
+
+        // Open the nav menu on scroll (large screens only).
         if (!hasSmallScreen()) {
             nav.openNavMenu(contentContainer, true);
         }
-    }, false)
+
+        // Determine which section is currently in view.
+        for (const section of contentSections) {
+            if (section in view) {
+                sectionInView = section;
+            }
+        }
+    }, false);*/
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0].id, contentContainer, contentSections, nav, body, false);
+        focusSection(contentSections[0], contentContainer, contentSections, nav, body, false);
     }
 }
 
