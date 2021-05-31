@@ -49,7 +49,7 @@ function secondsToMs(seconds) {
 
 
 // Minified code snippet below by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
-// Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 5/2021).
+// Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 31/05/2021).
 
 /*--------------------------------------------
  Functions to make scroll with speed control
