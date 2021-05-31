@@ -35,6 +35,38 @@ function onContentTransitionEnd(contentContainer) {
     }
 }
 
+
+/**
+ * @description Converts a time value in seconds to milliseconds.
+ * @param {string|number} seconds Value to convert from.
+ * Could be a string (e.g. '3.2s') or a number (e.g. 3.2).
+ * @returns {number} Converted value in milliseconds.
+ */
+function secondsToMs(seconds) {
+    const secondValue = parseFloat(seconds);
+    return secondValue * 1000;
+}
+
+
+// Minified code snippet below by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
+// Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 5/2021).
+
+/*--------------------------------------------
+ Functions to make scroll with speed control
+---------------------------------------------*/
+
+// c = element to scroll to or top position in pixels
+// e = duration of the scroll in ms, time scrolling
+// d = (optative) ease function. Default easeOutCuaic
+function scrollTo(c,e,d){d||(d=easeOutCuaic);var a=document.documentElement;
+    if(0===a.scrollTop){var b=a.scrollTop;++a.scrollTop;a=b+1===a.scrollTop--?a:document.body}
+    b=a.scrollTop;0>=e||("object"===typeof b&&(b=b.offsetTop),
+    "object"===typeof c&&(c=c.offsetTop),function(a,b,c,f,d,e,h){
+    function g(){0>f||1<f||0>=d?a.scrollTop=c:(a.scrollTop=b-(b-c)*h(f),
+    f+=d*e,setTimeout(g,e))}g()}(a,b,c,0,1/e,20,d))};
+    function easeOutCuaic(t){t--;return t*t*t+1;}
+
+
 /* -------------------------------------------------------------------------
  * Object constructors
  */
@@ -357,10 +389,13 @@ function focusSection(sectionId, contentContainer, contentSections, nav, body, u
         body.classList.add(gradientClass);
     }
 
-    // Scroll to the associated section.
+    // Scroll to the associated section smoothly.
     if (section) {
-        const { x, y, width, height } = section.getBoundingClientRect();
-        window.scrollTo(x, window.scrollY + y);
+        const { y } = section.getBoundingClientRect();
+        const scrollDuration = secondsToMs(
+            getComputedStyle(body).getPropertyValue('--section-transition-time'));
+
+        scrollTo(window.scrollY + y, scrollDuration, easeOutCuaic);
     }
 }
 
