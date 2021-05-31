@@ -455,7 +455,7 @@ function pageSetup() {
         for (const section of contentSections) {
             if (isSectionInView(section, WITHIN_SCREEN_PERCENT)) {
                 sectionInView = section;
-                /*console.log(sectionInView);*/
+                break;
             }
         }
     }, false);
