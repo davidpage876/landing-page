@@ -61,6 +61,22 @@ function secondsToMs(seconds) {
     return secondValue * 1000;
 }
 
+/**
+ * @description Checks if a section is in view.
+ * @param {Element} section - Section to check.
+ * @param {number} withinScreenPercent - The section must be within percentage of screen from the centre.
+ * Expects normalized value between 0 and 1.
+ * @returns {boolean} - True if the given section is within view, false otherwise.
+ */
+function isSectionInView(section, withinScreenPercent) {
+    const windowHeight = window.innerHeight;
+    const windowYCenter = windowHeight / 2;
+    const {y, height} = section.getBoundingClientRect();
+    const yCenter = y + height / 2;
+
+    return Math.abs(yCenter - windowYCenter) < withinScreenPercent * windowHeight;
+}
+
 
 // Minified code snippet below by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
 // Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 31/05/2021).
@@ -426,7 +442,7 @@ function pageSetup() {
     nav.buildNavigation(contentContainer, contentSections);
 
     // Set up scroll events.
-    /*const sectionInView = contentSections[0];
+    let sectionInView = contentSections[0];
     window.addEventListener('scroll', () => {
 
         // Open the nav menu on scroll (large screens only).
@@ -435,16 +451,18 @@ function pageSetup() {
         }
 
         // Determine which section is currently in view.
+        const WITHIN_SCREEN_PERCENT = 0.5; // 50%
         for (const section of contentSections) {
-            if (section in view) {
+            if (isSectionInView(section, WITHIN_SCREEN_PERCENT)) {
                 sectionInView = section;
+                /*console.log(sectionInView);*/
             }
         }
-    }, false);*/
+    }, false);
 
     // Focus on the first section initially.
     if (contentSections.length > 0) {
-        focusSection(contentSections[0], contentContainer, contentSections, nav, body, false);
+        focusSection(sectionInView, contentContainer, contentSections, nav, body, false);
     }
 }
 
