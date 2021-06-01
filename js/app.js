@@ -362,14 +362,15 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  * The section in focus has the class 'focus' added to it.
  * 'focus' is also added to the associated navigation list item.
  * All other sections and navigation items lose focus.
+ * The background gradient effect changes to match the focused section.
  * @param {string} section - Section to focus on.
  * @param {Element} contentContainer - Container for content.
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Navigation} nav - Navigation menu.
  * @param {Element} body - HTML body element.
- * @param {boolean} useTransitions - Should transitions be used.
+ * @param {boolean} useTransitions - Should transitions be used. Default true.
  */
-function focusSection(section, contentContainer, contentSections, nav, body, useTransitions) {
+function focusSection(section, contentContainer, contentSections, nav, body, useTransitions = true) {
 
     // Remove focus from all sections except for the current one.
     for (const s of contentSections) {
