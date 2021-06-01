@@ -88,7 +88,7 @@ function isSectionInView(section, withinScreenPercent) {
 // c = element to scroll to or top position in pixels
 // e = duration of the scroll in ms, time scrolling
 // d = (optative) ease function. Default easeOutCuaic
-function scrollTo(c,e,d){d||(d=easeOutCuaic);var a=document.documentElement;
+function scrollToAdvanced(c,e,d){d||(d=easeOutCuaic);var a=document.documentElement;
     if(0===a.scrollTop){var b=a.scrollTop;++a.scrollTop;a=b+1===a.scrollTop--?a:document.body}
     b=a.scrollTop;0>=e||("object"===typeof b&&(b=b.offsetTop),
     "object"===typeof c&&(c=c.offsetTop),function(a,b,c,f,d,e,h){
@@ -413,13 +413,19 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
         body.classList.add(gradientClass);
     }
 
-    // Scroll to the associated section smoothly.
+    // Scroll to the associated section.
+    // Scroll smoothly if we are using transitions.
     if (section) {
         const { y } = section.getBoundingClientRect();
-        const scrollDuration = secondsToMs(
-            getComputedStyle(body).getPropertyValue('--section-transition-time'));
+        if (useTransitions)
+        {
+            const scrollDuration = secondsToMs(
+                getComputedStyle(body).getPropertyValue('--section-transition-time'));
 
-        scrollTo(window.scrollY + y, scrollDuration, easeOutCuaic);
+            scrollToAdvanced(window.scrollY + y, scrollDuration, easeOutCuaic);
+        } else {
+            window.scrollTo(0, window.scrollY + y);
+        }
     }
 }
 
@@ -442,7 +448,16 @@ function pageSetup() {
     nav.buildNavigation(contentContainer, contentSections);
 
     // Set up scroll events.
-    let sectionInView = contentSections[0];
+    let sectionInView = contentSections[0]; /* Todo: Get section in view on start */
+
+    // Handle scroll event, focusing on the section in view a short time after scrolling stops.
+    /*const TIMEOUT_TIME = 200;
+    let timeOutId = null;
+    const onTimeOutEnd = () => {
+        focusSection(sectionInView, contentContainer, contentSections, nav, body, true);
+        nav.openNavMenu(contentContainer, true);
+        window.clearTimeout(timeOutId);
+    };*/
     window.addEventListener('scroll', () => {
 
         // Open the nav menu on scroll (large screens only).
@@ -451,10 +466,12 @@ function pageSetup() {
         }
 
         // Determine which section is currently in view.
+        /*// If the section changed, focus on it a short time after scrolling stops.*/
         const WITHIN_SCREEN_PERCENT = 0.5; // 50%
         for (const section of contentSections) {
-            if (isSectionInView(section, WITHIN_SCREEN_PERCENT)) {
+            if (isSectionInView(section, WITHIN_SCREEN_PERCENT) && section != sectionInView) {
                 sectionInView = section;
+                /*timeOutId = window.setTimeout(onTimeOutEnd, TIMEOUT_TIME);*/
                 break;
             }
         }
