@@ -91,6 +91,7 @@ function isSectionInView(section, withinScreenPercent) {
  */
 function ScrollManager(defaultDuration = 1000) {
     this.defaultDuration = defaultDuration;
+    this.triggeredScrollEvent = false;
     this._timeOutId = undefined;
 
     /**
@@ -118,11 +119,14 @@ function ScrollManager(defaultDuration = 1000) {
         if (duration > 0) {
             this._scrollToPosition(window.scrollY, targetY, 0, 1 / duration, easeFunction);
         } else {
+            this.triggeredScrollEvent = true;
             window.scrollTo(0, targetY);
         }
     }
 
     this._scrollToPosition = function (from, to, timeSinceStart, speed, motion) {
+        this.triggeredScrollEvent = true;
+
         if (timeSinceStart < 0 || timeSinceStart > 1 || speed <= 0) {
             window.scrollTo(0, to);
             return;
@@ -480,7 +484,7 @@ function pageSetup() {
 
     // Handle scroll event, focusing on the section in view.
     let sectionInView = undefined;
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', (event) => {
 
         // Open the nav menu on scroll (large screens only).
         if (!hasSmallScreen()) {
@@ -491,9 +495,15 @@ function pageSetup() {
         // If the section changed, focus on it.
         const WITHIN_SCREEN_PERCENT = 0.5; // 50%
         for (const section of contentSections) {
-            if (isSectionInView(section, WITHIN_SCREEN_PERCENT) && section != sectionInView) {
+            if (isSectionInView(section, WITHIN_SCREEN_PERCENT)) {
                 sectionInView = section;
-                focusSection(sectionInView, contentContainer, contentSections, nav, body, true);
+
+                // Only focus on the section if the view was scrolled by user input (or the browser),
+                // rather than being controlled the scroll manager.
+                if (!scrollManager.triggeredScrollEvent) {
+                    focusSection(sectionInView, contentContainer, contentSections, nav, body, true);
+                }
+                scrollManager.triggeredScrollEvent = false;
                 break;
             }
         }
