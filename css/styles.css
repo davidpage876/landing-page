@@ -311,6 +311,14 @@ h3 {
 
 .card__heading {
     margin: 0;
+    opacity: 0%;
+    transition: opacity var(--section-transition-time) ease-in-out;
+}
+
+.focus .card__heading {
+    opacity: 100%;
+}
+
 }
 
 @media only screen and (min-width: 960px) {
