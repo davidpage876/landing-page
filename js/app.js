@@ -157,13 +157,14 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Add event handlers to nav list items.
         for (const navItem of this.navItems) {
 
-            // When nav item clicked focus on the corresponding section.
+            // When nav item clicked focus on the corresponding section and scroll to it.
             navItem.addEventListener('click', (event) => {
                 event.preventDefault();
 
                 const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
                 if (section) {
                     focusSection(section, contentContainer, contentSections, this, this.body, true);
+                    scrollToSection(section, this.body, true);
                 }
             }, false);
 
@@ -358,6 +359,27 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  */
 
 /**
+ * @description Scrolls the view to a section.
+ * @param {Element} section - Section to scroll to.
+ * @param {Element} body - HTML body element.
+ * @param {boolean} smoothly - If true, scroll smoothly over time, otherwise scroll instantaneously. Default true.
+ */
+function scrollToSection(section, body, smoothly = true) {
+    // Scroll to the associated section.
+    // Scroll smoothly if we are using transitions.
+    const { y } = section.getBoundingClientRect();
+    if (smoothly)
+    {
+        const scrollDuration = secondsToMs(
+            getComputedStyle(body).getPropertyValue('--section-transition-time'));
+
+        scrollToAdvanced(window.scrollY + y, scrollDuration, easeOutCuaic);
+    } else {
+        window.scrollTo(0, window.scrollY + y);
+    }
+}
+
+/**
  * @description Makes the given section in focus.
  * The section in focus has the class 'focus' added to it.
  * 'focus' is also added to the associated navigation list item.
@@ -368,7 +390,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Navigation} nav - Navigation menu.
  * @param {Element} body - HTML body element.
- * @param {boolean} useTransitions - Should transitions be used. Default true.
+ * @param {boolean} useTransitions - Should transitions be used? Default true.
  */
 function focusSection(section, contentContainer, contentSections, nav, body, useTransitions = true) {
 
@@ -412,21 +434,6 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
         const gradientClass = `gradient-bg--${sectionGradientName}`;
         gradientBg.classList.add(gradientClass);
         body.classList.add(gradientClass);
-    }
-
-    // Scroll to the associated section.
-    // Scroll smoothly if we are using transitions.
-    if (section) {
-        const { y } = section.getBoundingClientRect();
-        if (useTransitions)
-        {
-            const scrollDuration = secondsToMs(
-                getComputedStyle(body).getPropertyValue('--section-transition-time'));
-
-            scrollToAdvanced(window.scrollY + y, scrollDuration, easeOutCuaic);
-        } else {
-            window.scrollTo(0, window.scrollY + y);
-        }
     }
 }
 
@@ -481,6 +488,7 @@ function pageSetup() {
     // Focus on the first section initially.
     if (contentSections.length > 0) {
         focusSection(sectionInView, contentContainer, contentSections, nav, body, false);
+        scrollToSection(sectionInView, body, false);
     }
 }
 
