@@ -78,7 +78,7 @@ function isSectionInView(section, withinScreenPercent) {
 }
 
 
-// Minified code snippet below by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
+// Snippet below modified from code by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
 // Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 31/05/2021).
 
 /*--------------------------------------------
