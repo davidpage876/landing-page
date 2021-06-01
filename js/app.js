@@ -116,9 +116,7 @@ function ScrollManager(defaultDuration = 1000) {
             duration = this.defaultDuration;
         }
         if (duration > 0) {
-            const scrollTop = document.documentElement.scrollTop;
-
-            this._scrollToPosition(scrollTop, targetY, 0, 1 / duration, easeFunction);
+            this._scrollToPosition(window.scrollY, targetY, 0, 1 / duration, easeFunction);
         } else {
             window.scrollTo(0, targetY);
         }
@@ -477,17 +475,11 @@ function pageSetup() {
     const contentSections = document.querySelectorAll('#content > .section');
     nav.buildNavigation(contentContainer, contentSections, scrollManager);
 
-    // Set up scroll events.
-    let sectionInView = contentSections[0]; /* Todo: Get section in view on start */
+    // Open the nav menu to start with.
+    nav.openNavMenu(contentContainer, true);
 
-    // Handle scroll event, focusing on the section in view a short time after scrolling stops.
-    /*const TIMEOUT_TIME = 200;
-    let timeOutId = null;
-    const onTimeOutEnd = () => {
-        focusSection(sectionInView, contentContainer, contentSections, nav, body, true);
-        nav.openNavMenu(contentContainer, true);
-        window.clearTimeout(timeOutId);
-    };*/
+    // Handle scroll event, focusing on the section in view.
+    let sectionInView = undefined;
     window.addEventListener('scroll', () => {
 
         // Open the nav menu on scroll (large screens only).
@@ -496,22 +488,16 @@ function pageSetup() {
         }
 
         // Determine which section is currently in view.
-        /*// If the section changed, focus on it a short time after scrolling stops.*/
+        // If the section changed, focus on it.
         const WITHIN_SCREEN_PERCENT = 0.5; // 50%
         for (const section of contentSections) {
             if (isSectionInView(section, WITHIN_SCREEN_PERCENT) && section != sectionInView) {
                 sectionInView = section;
-                /*timeOutId = window.setTimeout(onTimeOutEnd, TIMEOUT_TIME);*/
+                focusSection(sectionInView, contentContainer, contentSections, nav, body, true);
                 break;
             }
         }
     }, false);
-
-    // Focus on the first section initially.
-    /*if (contentSections.length > 0) {
-        focusSection(sectionInView, contentContainer, contentSections, nav, body, false);
-        scrollManager.scrollTo(sectionInView, 0, false);
-    }*/
 }
 
 pageSetup();
