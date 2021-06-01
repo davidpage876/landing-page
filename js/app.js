@@ -77,30 +77,67 @@ function isSectionInView(section, withinScreenPercent) {
     return Math.abs(yCenter - windowYCenter) < withinScreenPercent * windowHeight;
 }
 
-
-// Snippet below modified from code by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
-// Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 31/05/2021).
-
-/*--------------------------------------------
- Functions to make scroll with speed control
----------------------------------------------*/
-
-// c = element to scroll to or top position in pixels
-// e = duration of the scroll in ms, time scrolling
-// d = (optative) ease function. Default easeOutCuaic
-var tid = undefined; function scrollToAdvanced(c,e,d){clearTimeout(tid);
-    d||(d=easeOutCuaic);var a=document.documentElement;
-    if(0===a.scrollTop){var b=a.scrollTop;++a.scrollTop;a=b+1===a.scrollTop--?a:document.body}
-    b=a.scrollTop;0>=e||("object"===typeof b&&(b=b.offsetTop),
-    "object"===typeof c&&(c=c.offsetTop),function(a,b,c,f,d,e,h){
-    function g(){0>f||1<f||0>=d?a.scrollTop=c:(a.scrollTop=b-(b-c)*h(f),
-    f+=d*e,tid=setTimeout(g,e))}g()}(a,b,c,0,1/e,20,d))};
-    function easeOutCuaic(t){t--;return t*t*t+1;}
-
-
 /* -------------------------------------------------------------------------
  * Object constructors
  */
+
+// ScrollManager functionality below is based on code by Rafael Marini Rôlo (username ℛɑƒæĿᴿᴹᴿ) (2021),
+// Stack Overflow [https://stackoverflow.com/a/50590388] (retrieved 31/05/2021).
+
+/**
+ * @description Manages scroll behaviour.
+ * @constructor
+ * @param {number} defaultDuration - The default time which scrolls will take to complete in milliseconds. Defaults to 1000.
+ */
+function ScrollManager(defaultDuration = 1000) {
+    this.defaultDuration = defaultDuration;
+    this._timeOutId = undefined;
+
+    /**
+     * @description Scrolls to an element over time vertically.
+     *
+     * @param {Element} target - Target element to scroll to.
+     * @param {number} duration - Total time which the scroll will take to complete in milliseconds.
+     * Defaults to the default duration time if undefined.
+     * If set to 0 we jump straight to the target.
+     * @param {boolean} smoothly - If true, scroll with easing, otherwise scroll linearly. Defaults to true.
+     */
+    this.scrollTo = function (target, duration = undefined, smoothly = true) {
+        const targetY = target.offsetTop;
+        const easeFunction = smoothly ? (t) => {
+            t--;
+            return t * t * t + 1;
+        } : (t) => {
+            return t;
+        };
+
+        clearTimeout(this._timeOutId);
+        if (duration === undefined) {
+            duration = this.defaultDuration;
+        }
+        if (duration > 0) {
+            const scrollTop = document.documentElement.scrollTop;
+
+            this._scrollToPosition(scrollTop, targetY, 0, 1 / duration, easeFunction);
+        } else {
+            window.scrollTo(0, targetY);
+        }
+    }
+
+    this._scrollToPosition = function (from, to, timeSinceStart, speed, motion) {
+        if (timeSinceStart < 0 || timeSinceStart > 1 || speed <= 0) {
+            window.scrollTo(0, to);
+            return;
+        }
+        const STEP = 20;
+
+        window.scrollTo(0, from - (from - to) * motion(timeSinceStart));
+        timeSinceStart += speed * STEP;
+        this._timeOutId = setTimeout(() => {
+            this._scrollToPosition(from, to, timeSinceStart, speed, motion);
+        }, STEP);
+    };
+}
 
 /**
  * @description Holds information about the nav menu.
@@ -128,8 +165,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * The newly created navigation items are added to this.navItems.
      * @param {Element} contentContainer - Container for content.
      * @param {Element[]} contentSections - Build navigation based on this list of content sections.
+     * @param {Element} scrollManager - Reference to the scroll manager.
      */
-    this.buildNavigation = function (contentContainer, contentSections) {
+    this.buildNavigation = function (contentContainer, contentSections, scrollManager) {
 
         // Build nav list.
         for (const section of contentSections) {
@@ -165,7 +203,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
                 const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
                 if (section) {
                     focusSection(section, contentContainer, contentSections, this, this.body, true);
-                    scrollToSection(section, this.body, true);
+                    scrollManager.scrollTo(section);
                 }
             }, false);
 
@@ -360,27 +398,6 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  */
 
 /**
- * @description Scrolls the view to a section.
- * @param {Element} section - Section to scroll to.
- * @param {Element} body - HTML body element.
- * @param {boolean} smoothly - If true, scroll smoothly over time, otherwise scroll instantaneously. Default true.
- */
-function scrollToSection(section, body, smoothly = true) {
-    // Scroll to the associated section.
-    // Scroll smoothly if we are using transitions.
-    const { y } = section.getBoundingClientRect();
-    if (smoothly)
-    {
-        const scrollDuration = secondsToMs(
-            getComputedStyle(body).getPropertyValue('--section-transition-time'));
-
-        scrollToAdvanced(window.scrollY + y, scrollDuration, easeOutCuaic);
-    } else {
-        window.scrollTo(0, window.scrollY + y);
-    }
-}
-
-/**
  * @description Makes the given section in focus.
  * The section in focus has the class 'focus' added to it.
  * 'focus' is also added to the associated navigation list item.
@@ -442,6 +459,10 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
  * @description Perform initial page set up, including building the navigation menu from content.
  */
 function pageSetup() {
+    // Set up scroll manager.
+    const scrollDuration = secondsToMs(
+        getComputedStyle(document.documentElement).getPropertyValue('--section-transition-time'));
+    const scrollManager = new ScrollManager(scrollDuration);
 
     // Set up navigation menu.
     const navContainer = document.getElementById('nav-menu');
@@ -454,7 +475,7 @@ function pageSetup() {
     // Build navigation from content.
     const contentContainer = document.getElementById('content');
     const contentSections = document.querySelectorAll('#content > .section');
-    nav.buildNavigation(contentContainer, contentSections);
+    nav.buildNavigation(contentContainer, contentSections, scrollManager);
 
     // Set up scroll events.
     let sectionInView = contentSections[0]; /* Todo: Get section in view on start */
@@ -487,10 +508,10 @@ function pageSetup() {
     }, false);
 
     // Focus on the first section initially.
-    if (contentSections.length > 0) {
+    /*if (contentSections.length > 0) {
         focusSection(sectionInView, contentContainer, contentSections, nav, body, false);
-        scrollToSection(sectionInView, body, false);
-    }
+        scrollManager.scrollTo(sectionInView, 0, false);
+    }*/
 }
 
 pageSetup();
