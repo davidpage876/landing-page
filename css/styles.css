@@ -158,16 +158,8 @@ h3 {
     transition-duration: var(--slow-fade-transition-time);
 }
 
-.nav-toggle:hover {
-    background: #ccc;
-}
-
 .nav-toggle--toggled {
     background: transparent;
-}
-
-.nav-toggle--toggled:hover {
-    background: #fff;
 }
 
 .nav-toggle__icon {
@@ -184,10 +176,6 @@ h3 {
 
 .nav-toggle--toggled .nav-toggle__icon {
     color: #fff;
-}
-
-.nav-toggle--toggled:hover .nav-toggle__icon {
-    color: #000;
 }
 
 .primary-nav {

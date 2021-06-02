@@ -219,7 +219,15 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             }, false);
         }
 
-        // Toggle navigation visibility on menu button clicked.
+        // Open navigation menu on button hover (desktop only).
+        this.navToggle.addEventListener('mouseenter', () => {
+            if (!hasSmallScreen()) {
+                this.openNavMenu(contentContainer, true);
+            }
+        }, false);
+
+
+        // Toggle navigation menu on button click.
         this.navToggle.addEventListener('click', () => {
             this.toggleNavMenu(contentContainer, true);
         }, false);

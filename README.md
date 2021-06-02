@@ -35,7 +35,6 @@ My project implements some ambitious (and somewhat experimental) special effects
 Note that I only support modern browsers. Specifically, my JavaScript functionality is not supported on IE.
 
 * Navigation menu sometimes disappears abruptly rather than smoothly fading out.
-* Navigation menu button does not detect clicks while a transition is occuring.
 
 ## Design Review
 
