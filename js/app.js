@@ -455,6 +455,26 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
         gradientBg.classList.add(gradientClass);
         body.classList.add(gradientClass);
     }
+
+    // Trigger rotation effect.
+    // Cards in focus face the view, cards above rotate counter-clockwise and cards below rotate clockwise.
+    for (const s of contentSections) {
+        const r = document.querySelector(`#${s.id} .rotates`);
+        if (s.id === section.id) {
+            r.classList.remove('rotate-cw');
+            r.classList.remove('rotate-ccw');
+        } else {
+            const windowYCenter = window.innerHeight / 2;
+            const {y, height} = s.getBoundingClientRect();
+            const yCenter = y + height / 2;
+
+            if (windowYCenter < yCenter) {
+                r.classList.add('rotate-ccw');
+            } else {
+                r.classList.add('rotate-cw');
+            }
+        }
+    }
 }
 
 /**
