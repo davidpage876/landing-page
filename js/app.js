@@ -204,7 +204,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
 
                 const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
                 if (section) {
-                    focusSection(section, contentContainer, contentSections, this, this.body, true);
+                    focusSection(section, contentContainer, contentSections, this, this.body, true, true);
                     scrollManager.scrollTo(section);
                 }
             }, false);
@@ -411,8 +411,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  * @param {Navigation} nav - Navigation menu.
  * @param {Element} body - HTML body element.
  * @param {boolean} useTransitions - Should transitions be used? Default true.
+ * @param {boolean} delayRotation - Should we delay removing the rotation effect from the focused section? Default false.
  */
-function focusSection(section, contentContainer, contentSections, nav, body, useTransitions = true) {
+function focusSection(section, contentContainer, contentSections, nav, body, useTransitions = true, delayRotation = false) {
 
     // Remove focus from all sections except for the current one.
     for (const s of contentSections) {
@@ -457,13 +458,33 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
     }
 
     // Trigger rotation effect.
-    // Cards in focus face the view, cards above rotate counter-clockwise and cards below rotate clockwise.
+    // Sections in focus face the view, sections above rotate counter-clockwise and sections below rotate clockwise.
+    const scrollDuration = secondsToMs(
+        getComputedStyle(document.documentElement).getPropertyValue('--section-transition-time'));
+    const rotationDelay = scrollDuration / 2;
+
+    const removeRotation = function(r, timeoutId = undefined) {
+        r.classList.remove('rotate-cw');
+        r.classList.remove('rotate-ccw');
+        if (timeoutId !== undefined) {
+            clearTimeout(timeoutId);
+        }
+    };
+
     for (const s of contentSections) {
         const r = document.querySelector(`#${s.id} .rotates`);
         if (s.id === section.id) {
-            r.classList.remove('rotate-cw');
-            r.classList.remove('rotate-ccw');
+
+            // Delay removing rotation on the focused section.
+            if (delayRotation) {
+                let timeoutId = undefined;
+                timeoutId = setTimeout(removeRotation.bind(null, r, timeoutId), rotationDelay);
+            } else {
+                removeRotation(r);
+            }
         } else {
+
+            // Rotation direction based on section position relative to window center.
             const windowYCenter = window.innerHeight / 2;
             const {y, height} = s.getBoundingClientRect();
             const yCenter = y + height / 2;
