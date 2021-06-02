@@ -16,7 +16,7 @@ function hasSmallScreen() {
  * @description Hides invisble nav menu from interaction when transition ends.
  * @param {Element} navContainer The nav menu.
  */
-function onNavTransitionEnd(navContainer) {
+function onNavTransitionEnd(navContainer, navToggle) {
     navContainer.classList.remove('fade');
     navContainer.classList.remove('fade--slow');
     if (!navContainer.classList.contains('open')) {
@@ -316,9 +316,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Hide the menu after a while of inactivity.
         this.resetTimeout(contentContainer);
 
-        // Toggle menu button and remove highlighting effect.
+        // Toggle menu button.
         this.navToggle.classList.add('nav-toggle--toggled');
-        this.navToggle.classList.remove('nav-toggle--highlight');
+        this.navToggle.classList.remove('fade--slow');
     }
 
     /**
@@ -326,14 +326,18 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * Main content is made visible as menu closes (mobile only).
      * @param {Element} contentContainer - Used to make content visible as menu closes.
      * @param {boolean} fade - Should a fade transition be used?
+     * @param {boolean} slowFade - If true we use a slow fade transition. Default is false.
      */
-    this.closeNavMenu = function (contentContainer, fade) {
+    this.closeNavMenu = function (contentContainer, fade, slowFade = false) {
         const mobile = hasSmallScreen();
 
         this.navContainer.classList.remove('open');
         if (fade) {
             this.navContainer.classList.remove('hidden');
             this.navContainer.classList.add('fade');
+            if (slowFade) {
+                this.navContainer.classList.add('fade--slow');
+            }
         } else {
             this.navContainer.classList.add('hidden');
         }
@@ -352,9 +356,11 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             this.handleTransitionEnd(contentContainer);
         }
 
-        // Untoggle menu button and add highlighting effect.
+        // Untoggle menu button.
         this.navToggle.classList.remove('nav-toggle--toggled');
-        this.navToggle.classList.add('nav-toggle--highlight');
+        if (fade && slowFade) {
+            this.navToggle.classList.add('fade--slow');
+        }
     }
 
     /**
@@ -401,8 +407,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
                 if (this._isCursorOverNavMenu) {
                     this._timeOutId = window.setTimeout(onTimeout, TIMEOUT_TIME);
                 } else {
-                    this.navContainer.classList.add('fade--slow');
-                    this.closeNavMenu(contentContainer, true);
+                    this.closeNavMenu(contentContainer, true, true);
                 }
             }
         };

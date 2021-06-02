@@ -146,50 +146,40 @@ h3 {
 
 .nav-toggle {
     background: #fff;
-    border: none;
+    border: solid 2px #fff;
     border-radius: 10px;
     width: 40px;
     height: 40px;
     margin: 27px 0 0 19px;
+    transition: background-color var(--fade-transition-time) ease-in-out;
+}
+
+.nav-toggle.fade--slow {
+    transition-duration: var(--slow-fade-transition-time);
 }
 
 .nav-toggle:hover {
     background: #aaa;
 }
 
-@media only screen and (min-width: 960px) {
-
-    .nav-toggle--highlight {
-        box-shadow: 0 0 13px rgb(255 255 255 / 60%);
-        animation: nav-toggle--glow 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes nav-toggle--glow {
-        from {
-            box-shadow: 0 0 8px rgb(255 255 255 / 0%);
-        }
-
-        to {
-            box-shadow: 0 0 15px rgb(255 255 255 / 70%);
-        }
-    }
-
+.nav-toggle--toggled {
+    background: transparent;
 }
 
 .nav-toggle__icon {
     color: #000;
     vertical-align: middle;
     font-size: 28px;
+	margin-left: -2px;
+    transition: color var(--fade-transition-time) ease-in-out;
 }
 
-.nav-toggle--toggled {
-    background: transparent;
-    border: solid 2px #fff;
+.nav-toggle.fade--slow .nav-toggle__icon {
+    transition-duration: var(--slow-fade-transition-time);
 }
 
 .nav-toggle--toggled .nav-toggle__icon {
     color: #fff;
-	margin-left: -2px;
 }
 
 .primary-nav {
