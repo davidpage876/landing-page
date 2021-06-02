@@ -6,10 +6,10 @@
 
 :root {
     --section-transition-time: 1.2s;
+    --card-fx-transition-time: 0.6s;
     --nav-transition-time: 0.2s;
     --nav-marker-transition-time: calc(var(--section-transition-time) - var(--nav-transition-time));
     --fade-transition-time: 0.2s;
-    --rotate-transition-time: 0.6s;
     --slow-fade-transition-time: 1.1s;
 }
 
@@ -321,7 +321,7 @@ h3 {
 .card__heading {
     margin: 0;
     opacity: 0%;
-    transition: opacity var(--section-transition-time) ease-in-out;
+    transition: opacity var(--card-fx-transition-time) ease-in-out;
 }
 
 .focus .card__heading {
@@ -346,7 +346,7 @@ h3 {
 }
 
 .rotates {
-    transition: transform var(--rotate-transition-time) ease-out;
+    transition: transform var(--card-fx-transition-time) ease-out;
 }
 
 .rotate-cw {
