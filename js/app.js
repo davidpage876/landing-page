@@ -562,6 +562,9 @@ function pageSetup() {
             }
         }
     }, false);
+
+    // Initially focus on first section.
+    focusSection(contentSections[0], contentContainer, contentSections, nav, body, false);
 }
 
 pageSetup();
