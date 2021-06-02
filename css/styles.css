@@ -182,6 +182,16 @@ h3 {
     font-size: 28px;
 }
 
+.nav-toggle--toggled {
+    background: transparent;
+    border: solid 2px #fff;
+}
+
+.nav-toggle--toggled .nav-toggle__icon {
+    color: #fff;
+	margin-left: -2px;
+}
+
 .primary-nav {
     position: relative;
 }

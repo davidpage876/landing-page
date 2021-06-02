@@ -316,7 +316,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Hide the menu after a while of inactivity.
         this.resetTimeout(contentContainer);
 
-        // Remove highlighting from the toggle button.
+        // Toggle menu button and remove highlighting effect.
+        this.navToggle.classList.add('nav-toggle--toggled');
         this.navToggle.classList.remove('nav-toggle--highlight');
     }
 
@@ -351,7 +352,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             this.handleTransitionEnd(contentContainer);
         }
 
-        // Highlight the toggle button.
+        // Untoggle menu button and add highlighting effect.
+        this.navToggle.classList.remove('nav-toggle--toggled');
         this.navToggle.classList.add('nav-toggle--highlight');
     }
 
