@@ -538,7 +538,7 @@ function pageSetup() {
 
     // Handle scroll event, focusing on the section in view.
     let sectionInView = undefined;
-    window.addEventListener('scroll', (event) => {
+    window.addEventListener('scroll', () => {
 
         // Open the nav menu on scroll (large screens only).
         if (!hasSmallScreen()) {
