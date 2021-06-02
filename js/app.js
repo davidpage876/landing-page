@@ -259,11 +259,6 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             }
         }, false);
 
-        // Hide the nav menu initially on mobile.
-        if (hasSmallScreen()) {
-            this.closeNavMenu(contentContainer, false);
-        }
-
         // Move the marker to the current nav item on scrolling the nav list.
         const updateMarker = () => {
             for (const navItem of this.navItems) {
@@ -274,6 +269,11 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             }
         };
         navContainer.addEventListener('scroll', updateMarker, false);
+
+        // Hide the nav menu initially on mobile.
+        if (hasSmallScreen()) {
+            this.closeNavMenu(contentContainer, false);
+        }
     }
 
     /**
