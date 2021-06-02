@@ -4,7 +4,7 @@ Hosted at https://davidpage876.github.io/landing-page/
 
 This project demonstrates my learning efforts in using JavaScript to manipulate the DOM and achieve complex dynamic effects.
 
-All HTML, CSS and JS code was written by me. Where relevant I cited the original source for code derived from elsewhere.
+All HTML, CSS and JS code was written by me, except where noted. Where relevant I cited the original source for code derived from elsewhere.
 
 ## Features
 
