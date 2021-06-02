@@ -86,6 +86,8 @@ function isSectionInView(section, withinScreenPercent) {
 
 /**
  * @description Manages scroll behaviour.
+ *
+ * Supports scrolling to an element over a custom time (note: the default window.scrollTo() does not support this).
  * @constructor
  * @param {number} defaultDuration - The default time which scrolls will take to complete in milliseconds. Defaults to 1000.
  */
