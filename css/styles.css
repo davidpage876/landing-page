@@ -92,8 +92,6 @@ h3 {
  * Layout
  */
 
-/* TODO: Is grid layout redundant, since my site header is display: fixed? */
-
 .landing-page {
     position: relative;
     display: grid;
@@ -120,14 +118,14 @@ h3 {
 
     .landing-page {
         display: grid;
-        grid-template-columns: 2fr 5fr;
+        grid-template-columns: 2fr 7fr;
         grid-template-areas:
         "side main";
     }
 
     .site-header {
         grid-area: side;
-        width: 30%;
+        width: 22%;
     }
 
 }
