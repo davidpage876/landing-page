@@ -71,7 +71,7 @@ function secondsToMs(seconds) {
 function isSectionInView(section, withinScreenPercent) {
     const windowHeight = window.innerHeight;
     const windowYCenter = windowHeight / 2;
-    const {y, height} = section.getBoundingClientRect();
+    const { y, height } = section.getBoundingClientRect();
     const yCenter = y + height / 2;
 
     return Math.abs(yCenter - windowYCenter) < withinScreenPercent * windowHeight;
@@ -476,7 +476,7 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
         getComputedStyle(document.documentElement).getPropertyValue('--section-transition-time'));
     const rotationDelay = scrollDuration / 2;
 
-    const removeRotation = function(r, timeoutId = undefined) {
+    const removeRotation = function (r, timeoutId = undefined) {
         r.classList.remove('rotate-cw');
         r.classList.remove('rotate-ccw');
         if (timeoutId !== undefined) {
@@ -499,7 +499,7 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
 
             // Rotation direction based on section position relative to window center.
             const windowYCenter = window.innerHeight / 2;
-            const {y, height} = s.getBoundingClientRect();
+            const { y, height } = s.getBoundingClientRect();
             const yCenter = y + height / 2;
 
             if (windowYCenter < yCenter) {
