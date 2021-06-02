@@ -242,9 +242,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             this._isCursorOverNavMenu = false;
         }, false);
 
-        // Close the nav menu when clicking outside of the hotspot (mobile only).
+        // Close the nav menu when clicking outside of the hotspot.
         window.addEventListener('click', () => {
-            if (!this._isCursorOverNavMenu && hasSmallScreen()) {
+            if (!this._isCursorOverNavMenu) {
                 this.closeNavMenu(contentContainer, true);
             }
         }, false);
