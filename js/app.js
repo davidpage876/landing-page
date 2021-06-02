@@ -226,7 +226,6 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             }
         }, false);
 
-
         // Toggle navigation menu on button click.
         this.navToggle.addEventListener('click', () => {
             this.toggleNavMenu(contentContainer, true);
@@ -299,12 +298,14 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.openNavMenu = function (contentContainer, fade) {
         const mobile = hasSmallScreen();
 
+        // Show nav menu.
         this.navContainer.classList.add('open');
         this.navContainer.classList.remove('hidden');
         if (fade) {
             this.navContainer.classList.add('fade');
         }
 
+        // Hide content.
         contentContainer.classList.remove('open');
         contentContainer.classList.remove('hidden');
         if (fade && mobile) {
@@ -339,6 +340,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.closeNavMenu = function (contentContainer, fade, slowFade = false) {
         const mobile = hasSmallScreen();
 
+        // Hide nav menu.
         this.navContainer.classList.remove('open');
         if (fade) {
             this.navContainer.classList.remove('hidden');
@@ -350,6 +352,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             this.navContainer.classList.add('hidden');
         }
 
+        // Show content.
         contentContainer.classList.add('open');
         contentContainer.classList.remove('hidden');
         if (fade && mobile) {
