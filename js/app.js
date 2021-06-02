@@ -253,6 +253,17 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         if (hasSmallScreen()) {
             this.closeNavMenu(contentContainer, false);
         }
+
+        // Move the marker to the current nav item on scrolling the nav list.
+        const updateMarker = () => {
+            for (const navItem of this.navItems) {
+                if (navItem.classList.contains('focus')) {
+                    this.moveNavMarker(navItem);
+                    break;
+                }
+            }
+        };
+        navContainer.addEventListener('scroll', updateMarker, false);
     }
 
     /**
