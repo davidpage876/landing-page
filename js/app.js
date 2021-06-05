@@ -227,13 +227,6 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             }, false);
         }
 
-        // Open navigation menu on button hover (desktop only).
-        this.navToggle.addEventListener('mouseenter', () => {
-            if (!hasSmallScreen()) {
-                this.openNavMenu(contentContainer, scrollManager, true);
-            }
-        }, false);
-
         // Toggle navigation menu on button click.
         this.navToggle.addEventListener('click', () => {
             this.toggleNavMenu(contentContainer, scrollManager, true);

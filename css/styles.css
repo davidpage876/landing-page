@@ -162,6 +162,25 @@ h3 {
     background: transparent;
 }
 
+@media only screen and (min-width: 960px) {
+
+    .nav-toggle:not(.nav-toggle--toggled) {
+        box-shadow: 0 0 13px rgb(255 255 255 / 60%);
+        animation: nav-toggle--glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes nav-toggle--glow {
+        from {
+            box-shadow: 0 0 6px rgb(255 255 255 / 0%);
+        }
+
+        to {
+            box-shadow: 0 0 12px rgb(255 255 255 / 70%);
+        }
+    }
+
+}
+
 .nav-toggle__icon {
     color: #000;
     vertical-align: middle;
