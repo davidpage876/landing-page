@@ -231,7 +231,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body, inacti
 
                 const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
                 if (section) {
-                    focusSection(section, contentContainer, contentSections, this, this.body, scrollManager, true, true);
+                    focusSection(section, contentContainer, contentSections, this, this.body, scrollManager, true);
                     scrollManager.scrollTo(section);
                 }
             }, false);
@@ -317,8 +317,6 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body, inacti
      */
     this.openNavMenu = function (contentContainer, scrollManager = undefined, fade = false) {
         const mobile = hasSmallScreen();
-
-        console.log(`openNavMenu - inactivityTimeout: ${this.inactivityTimeout}`);
 
         // Show nav menu.
         this.navContainer.classList.add('open');
@@ -466,10 +464,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body, inacti
  * @param {Element} body - HTML body element.
  * @param {ScrollManager} scrollManager - Manager for scrolling behaviour. Provide if using transitions.
  * @param {boolean} useTransitions - Should transitions be used? Default true.
- * @param {boolean} delayRotation - Should we delay removing the rotation effect from the focused section? Default false.
  */
 function focusSection(section, contentContainer, contentSections, nav, body,
-        scrollManager = undefined, useTransitions = true, delayRotation = false) {
+        scrollManager = undefined, useTransitions = true) {
 
     // Remove focus from all sections except for the current one.
     for (const s of contentSections) {
@@ -512,41 +509,36 @@ function focusSection(section, contentContainer, contentSections, nav, body,
         gradientBg.classList.add(gradientClass);
         body.classList.add(gradientClass);
     }
+}
 
-    // Trigger rotation effect.
-    // Sections in focus face the view, sections above rotate counter-clockwise and sections below rotate clockwise.
-    const rotationDelay = scrollManager.defaultDuration / 2 || 0;
+/**
+ * @description Updates rotation effects on sections. *
+ * The focused section faces the view.
+ * Sections above the view rotate counter-clockwise.
+ * Sections below the view rotate clockwise.
+ * @param {Element} sectionInView - The section currently in view.
+ * @param {Element[]} contentSections - List of all content sections.
+ * @param {ScrollManager} scrollManager - Manager for scrolling behaviour.
+ */
+function updateRotationEffects(sectionInFocus, contentSections, scrollManager) {
+    for (const section of contentSections) {
+        const element = document.querySelector(`#${section.id} .rotates`);
+        if (section.id === sectionInFocus.id) {
 
-    const removeRotation = function (r, timeoutId = undefined) {
-        r.classList.remove('rotate-cw');
-        r.classList.remove('rotate-ccw');
-        if (timeoutId !== undefined) {
-            clearTimeout(timeoutId);
-        }
-    };
-
-    for (const s of contentSections) {
-        const r = document.querySelector(`#${s.id} .rotates`);
-        if (s.id === section.id) {
-
-            // Delay removing rotation on the focused section.
-            if (delayRotation) {
-                let timeoutId = undefined;
-                timeoutId = setTimeout(removeRotation.bind(null, r, timeoutId), rotationDelay);
-            } else {
-                removeRotation(r);
-            }
+            // Face the view.
+            element.classList.remove('rotate-cw');
+            element.classList.remove('rotate-ccw');
         } else {
 
-            // Rotation direction based on section position relative to window center.
+            // Rotation direction is based on section position relative to window center.
             const windowYCenter = window.innerHeight / 2;
-            const { y, height } = s.getBoundingClientRect();
+            const { y, height } = section.getBoundingClientRect();
             const yCenter = y + height / 2;
 
             if (windowYCenter < yCenter) {
-                r.classList.add('rotate-ccw');
+                element.classList.add('rotate-ccw');
             } else {
-                r.classList.add('rotate-cw');
+                element.classList.add('rotate-cw');
             }
         }
     }
@@ -597,6 +589,9 @@ function pageSetup() {
             focusSection(sectionInView, contentContainer, contentSections, nav, body, scrollManager, true);
         }
         scrollManager.triggeredScrollEvent = false;
+
+        // Update section rotation effects.
+        updateRotationEffects(sectionInView, contentSections, scrollManager);
     };
     window.addEventListener('scroll', onScroll, false);
 
