@@ -161,7 +161,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.navItems = [];
     this._onNavTransitionEnd = null;
     this._onContentTransitionEnd = null;
-    this._timeOutId = null;
+    this._fadeTimeoutId = null;
+    this._inactivityTimerId = null;
     this._isCursorOverNavMenu = true;
 
     /**
@@ -204,11 +205,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             navItem.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                console.log("nav item clicked");
-
                 const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
                 if (section) {
-                    focusSection(section, contentContainer, contentSections, this, this.body, true, true);
+                    focusSection(section, contentContainer, contentSections, this, this.body, scrollManager, true, true);
                     scrollManager.scrollTo(section);
                 }
             }, false);
@@ -224,23 +223,22 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Open navigation menu on button hover (desktop only).
         this.navToggle.addEventListener('mouseenter', () => {
             if (!hasSmallScreen()) {
-                this.openNavMenu(contentContainer, true);
+                this.openNavMenu(contentContainer, scrollManager, true);
             }
         }, false);
 
         // Toggle navigation menu on button click.
         this.navToggle.addEventListener('click', () => {
-            this.toggleNavMenu(contentContainer, true);
+            this.toggleNavMenu(contentContainer, scrollManager, true);
         }, false);
 
         // Update visibility state on start and on resize events.
         // When we are on a mobile screen hide the nav menu by default.
         const updateVisibilityState = () => {
-            console.log("updating visibility state");
             if (hasSmallScreen()) {
-                this.closeNavMenu(contentContainer, false);
+                this.closeNavMenu(contentContainer, scrollManager, false);
             } else {
-                this.openNavMenu(contentContainer, false);
+                this.openNavMenu(contentContainer, scrollManager, false);
             }
         };
         updateVisibilityState();
@@ -257,7 +255,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Close the nav menu when clicking outside of the hotspot (mobile only).
         window.addEventListener('click', () => {
             if (!this._isCursorOverNavMenu && hasSmallScreen()) {
-                this.closeNavMenu(contentContainer, true);
+                this.closeNavMenu(contentContainer, scrollManager, true);
             }
         }, false);
 
@@ -274,7 +272,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
 
         // Hide the nav menu initially on mobile.
         if (hasSmallScreen()) {
-            this.closeNavMenu(contentContainer, false);
+            this.closeNavMenu(contentContainer, scrollManager, false);
         }
     }
 
@@ -282,13 +280,14 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @description Toggles navigation menu visibility.
      * Main content is hidden while the menu is open (mobile only).
      * @param {Element} contentContainer - Used to hide content while menu is open.
+     * @param {ScrollManager} scrollManager - Manager for scrolling behaviour. Provide if using fade.
      * @param {boolean} fade - Should a fade transition be used?
      */
-    this.toggleNavMenu = function (contentContainer, fade) {
+    this.toggleNavMenu = function (contentContainer, scrollManager = undefined, fade = false) {
         if (this.navContainer.classList.contains('open')) {
-            this.closeNavMenu(contentContainer, fade);
+            this.closeNavMenu(contentContainer, scrollManager, fade);
         } else {
-            this.openNavMenu(contentContainer, fade);
+            this.openNavMenu(contentContainer, scrollManager, fade);
         }
     }
 
@@ -296,12 +295,11 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @description Makes the navigation menu visible.
      * Main content is hidden while the menu is open (mobile only).
      * @param {Element} contentContainer - Used to hide content while menu is open.
+     * @param {ScrollManager} scrollManager - Manager for scrolling behaviour. Provide if using fade.
      * @param {boolean} fade - Should a fade transition be used?
      */
-    this.openNavMenu = function (contentContainer, fade) {
+    this.openNavMenu = function (contentContainer, scrollManager = undefined, fade = false) {
         const mobile = hasSmallScreen();
-
-        console.log(`open nav menu - fade: ${fade}`);
 
         // Show nav menu.
         this.navContainer.classList.add('open');
@@ -322,13 +320,13 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             this.body.classList.add('disable-scroll');
         }
 
-        // Hide invisible elements once transitions are complete.
+        // Hide invisible elements once fade-outs are complete.
         if (fade) {
-            this.handleTransitionEnd(contentContainer);
+            this.handleFadeEnd(contentContainer, scrollManager);
         }
 
         // Hide the menu after a while of inactivity.
-        this.resetTimeout(contentContainer);
+        this.resetInactivityTimer(contentContainer, scrollManager);
 
         // Toggle menu button.
         this.navToggle.classList.add('nav-toggle--toggled');
@@ -339,13 +337,12 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @description Makes the navigation menu hidden.
      * Main content is made visible as menu closes (mobile only).
      * @param {Element} contentContainer - Used to make content visible as menu closes.
+     * @param {ScrollManager} scrollManager - Manager for scrolling behaviour. Provide if using fade.
      * @param {boolean} fade - Should a fade transition be used?
      * @param {boolean} slowFade - If true we use a slow fade transition. Default is false.
      */
-    this.closeNavMenu = function (contentContainer, fade, slowFade = false) {
+    this.closeNavMenu = function (contentContainer, scrollManager = undefined, fade = false, slowFade = false) {
         const mobile = hasSmallScreen();
-
-        console.log(`close nav menu - fade: ${fade}, slowFade: ${slowFade}`);
 
         // Hide nav menu.
         this.navContainer.classList.remove('open');
@@ -356,7 +353,6 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
                 this.navContainer.classList.add('fade--slow');
             }
         } else {
-            console.log("hiding immediately because not fading");
             this.navContainer.classList.add('hidden');
         }
 
@@ -370,9 +366,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Re-enable page scrolling.
         this.body.classList.remove('disable-scroll');
 
-        // Hide invisible elements once transitions are complete.
+        // Hide invisible elements once fade-outs are complete.
         if (fade) {
-            this.handleTransitionEnd(contentContainer);
+            this.handleFadeEnd(contentContainer, scrollManager);
         }
 
         // Untoggle menu button.
@@ -393,47 +389,44 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
 
         const markerY = itemY - containerY + itemHeight / 2 - markerHeight / 2;
         this.navMarker.style.top = `${markerY}px`;
-        /*console.log(`containerY:${containerY} itemY:${itemY} itemHeight:${itemHeight} markerHeight:${markerHeight} markerY:${markerY}`);*/
     }
 
     /**
-     * @description Handles transition end behaviour.
-     * Prevents interaction with nav menu and main content when they are invisible.
+     * @description Handles fade end behaviour.
+     * Disables interaction with nav menu and main content when they are invisible.
      * @param {Element} contentContainer The main content.
+     * @param {ScrollManager} scrollManager - Manager for scrolling behaviour.
      */
-    this.handleTransitionEnd = function (contentContainer) {
-
-        console.log(`handle transition end - this._onNavTransitionEnd: ${this._onNavTransitionEnd}`);
-
-        this.navContainer.removeEventListener('transitionend', this._onNavTransitionEnd, false);
-        this._onNavTransitionEnd = onNavTransitionEnd.bind(null, this.navContainer);
-        this.navContainer.addEventListener('transitionend', this._onNavTransitionEnd, false);
-
-        contentContainer.removeEventListener('transitionend', this._onContentTransitionEnd, false);
-        this._onContentTransitionEnd = onContentTransitionEnd.bind(null, contentContainer);
-        contentContainer.addEventListener('transitionend', this._onContentTransitionEnd, false);
+    this.handleFadeEnd = function (contentContainer, scrollManager) {
+        window.clearTimeout(this._fadeTimeoutId);
+        this._fadeTimeoutId = window.setTimeout(() => {
+            onNavTransitionEnd(this.navContainer);
+            onContentTransitionEnd(contentContainer);
+        }, scrollManager.defaultDuration);
     }
 
     /**
-     * @description Reset timeout timer to the initial time.
+     * @description Reset timer which monitors how long the user has not interacted with the navigation menu (or scrolled).
+     * Closes the navigation menu after a while of inactivity.
      * @param {Element} contentContainer The main content. Use for transitions on mobile.
+     * @param {ScrollManager} scrollManager - Manager for scrolling behaviour.
      */
-    this.resetTimeout = function (contentContainer) {
+    this.resetInactivityTimer = function (contentContainer, scrollManager) {
         const TIMEOUT_TIME = 1000;
 
-        window.clearTimeout(this._timeOutId);
+        window.clearTimeout(this._inactivityTimerId);
         const onTimeout = () => {
 
             // Reset timer if the cursor is over the menu, otherwise close the menu.
             if (!hasSmallScreen()) {
                 if (this._isCursorOverNavMenu) {
-                    this._timeOutId = window.setTimeout(onTimeout, TIMEOUT_TIME);
+                    this._inactivityTimerId = window.setTimeout(onTimeout, TIMEOUT_TIME);
                 } else {
-                    this.closeNavMenu(contentContainer, true, true);
+                    this.closeNavMenu(contentContainer, scrollManager, true, true);
                 }
             }
         };
-        this._timeOutId = window.setTimeout(onTimeout, TIMEOUT_TIME);
+        this._inactivityTimerId = window.setTimeout(onTimeout, TIMEOUT_TIME);
     }
 }
 
@@ -452,10 +445,12 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
  * @param {Element[]} contentSections - List of all content sections.
  * @param {Navigation} nav - Navigation menu.
  * @param {Element} body - HTML body element.
+ * @param {ScrollManager} scrollManager - Manager for scrolling behaviour. Provide if using transitions.
  * @param {boolean} useTransitions - Should transitions be used? Default true.
  * @param {boolean} delayRotation - Should we delay removing the rotation effect from the focused section? Default false.
  */
-function focusSection(section, contentContainer, contentSections, nav, body, useTransitions = true, delayRotation = false) {
+function focusSection(section, contentContainer, contentSections, nav, body,
+        scrollManager = undefined, useTransitions = true, delayRotation = false) {
 
     // Remove focus from all sections except for the current one.
     for (const s of contentSections) {
@@ -477,7 +472,7 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
 
     // Close the nav menu if on mobile.
     if (hasSmallScreen()) {
-        nav.closeNavMenu(contentContainer, useTransitions);
+        nav.closeNavMenu(contentContainer, scrollManager, useTransitions);
     }
 
     // Switch background gradient.
@@ -501,9 +496,7 @@ function focusSection(section, contentContainer, contentSections, nav, body, use
 
     // Trigger rotation effect.
     // Sections in focus face the view, sections above rotate counter-clockwise and sections below rotate clockwise.
-    const scrollDuration = secondsToMs(
-        getComputedStyle(document.documentElement).getPropertyValue('--section-transition-time'));
-    const rotationDelay = scrollDuration / 2;
+    const rotationDelay = scrollManager.defaultDuration / 2 || 0;
 
     const removeRotation = function (r, timeoutId = undefined) {
         r.classList.remove('rotate-cw');
@@ -563,7 +556,7 @@ function pageSetup() {
     nav.buildNavigation(contentContainer, contentSections, scrollManager);
 
     // Open the nav menu to start with.
-    nav.openNavMenu(contentContainer, true);
+    nav.openNavMenu(contentContainer, scrollManager, true);
 
     // Handle scroll event, focusing on the section in view.
     let sectionInView = undefined;
@@ -571,7 +564,7 @@ function pageSetup() {
 
         // Open the nav menu on scroll (large screens only).
         if (!hasSmallScreen()) {
-            nav.openNavMenu(contentContainer, true);
+            nav.openNavMenu(contentContainer, scrollManager, true);
         }
 
         // Determine which section is currently in view.
@@ -584,7 +577,7 @@ function pageSetup() {
                 // Only focus on the section if the view was scrolled by user input (or the browser),
                 // rather than being controlled the scroll manager.
                 if (!scrollManager.triggeredScrollEvent) {
-                    focusSection(sectionInView, contentContainer, contentSections, nav, body, true);
+                    focusSection(sectionInView, contentContainer, contentSections, nav, body, scrollManager, true);
                 }
                 scrollManager.triggeredScrollEvent = false;
                 break;
@@ -593,7 +586,7 @@ function pageSetup() {
     }, false);
 
     // Initially focus on first section.
-    focusSection(contentSections[0], contentContainer, contentSections, nav, body, false);
+    focusSection(contentSections[0], contentContainer, contentSections, nav, body, scrollManager, false);
 }
 
 pageSetup();
