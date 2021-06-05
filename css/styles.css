@@ -185,11 +185,14 @@ h3 {
 }
 
 .nav-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: #fff;
     border: solid 2px #fff;
     border-radius: 10px;
-    width: 40px;
-    height: 40px;
+    width: 43px;
+    height: 43px;
     margin: 27px 0 0 19px;
     transition: background-color var(--fade-transition-time) ease-in-out;
 }
@@ -225,7 +228,6 @@ h3 {
     color: #000;
     vertical-align: middle;
     font-size: 28px;
-	margin-left: -2px;
     transition: color var(--fade-transition-time) ease-in-out;
 }
 
