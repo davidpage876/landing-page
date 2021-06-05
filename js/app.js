@@ -126,6 +126,13 @@ function ScrollManager(defaultDuration = 1000) {
         }
     }
 
+    /**
+     * @description Interrupts any current scrolling, stopping it immediately.
+     */
+    this.interruptScroll = function() {
+        clearTimeout(this._timeOutId);
+    }
+
     this._scrollToPosition = function (from, to, timeSinceStart, speed, motion) {
         this.triggeredScrollEvent = true;
 
@@ -577,6 +584,10 @@ function pageSetup() {
                 // Only focus on the section if the view was scrolled by user input (or the browser),
                 // rather than being controlled the scroll manager.
                 if (!scrollManager.triggeredScrollEvent) {
+
+                    // Interrupt any previous scrolling on user input.
+                    scrollManager.interruptScroll();
+
                     focusSection(sectionInView, contentContainer, contentSections, nav, body, scrollManager, true);
                 }
                 scrollManager.triggeredScrollEvent = false;
