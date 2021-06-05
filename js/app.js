@@ -16,7 +16,7 @@ function hasSmallScreen() {
  * @description Hides invisble nav menu from interaction when transition ends.
  * @param {Element} navContainer The nav menu.
  */
-function onNavTransitionEnd(navContainer, navToggle) {
+function onNavTransitionEnd(navContainer) {
     navContainer.classList.remove('fade');
     navContainer.classList.remove('fade--slow');
     if (!navContainer.classList.contains('open')) {
@@ -204,6 +204,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
             navItem.addEventListener('click', (event) => {
                 event.preventDefault();
 
+                console.log("nav item clicked");
+
                 const section = getSectionWithId(navItem.dataset.sectionId, contentSections);
                 if (section) {
                     focusSection(section, contentContainer, contentSections, this, this.body, true, true);
@@ -234,6 +236,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
         // Update visibility state on start and on resize events.
         // When we are on a mobile screen hide the nav menu by default.
         const updateVisibilityState = () => {
+            console.log("updating visibility state");
             if (hasSmallScreen()) {
                 this.closeNavMenu(contentContainer, false);
             } else {
@@ -298,6 +301,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.openNavMenu = function (contentContainer, fade) {
         const mobile = hasSmallScreen();
 
+        console.log(`open nav menu - fade: ${fade}`);
+
         // Show nav menu.
         this.navContainer.classList.add('open');
         this.navContainer.classList.remove('hidden');
@@ -340,6 +345,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.closeNavMenu = function (contentContainer, fade, slowFade = false) {
         const mobile = hasSmallScreen();
 
+        console.log(`close nav menu - fade: ${fade}, slowFade: ${slowFade}`);
+
         // Hide nav menu.
         this.navContainer.classList.remove('open');
         if (fade) {
@@ -349,6 +356,7 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
                 this.navContainer.classList.add('fade--slow');
             }
         } else {
+            console.log("hiding immediately because not fading");
             this.navContainer.classList.add('hidden');
         }
 
@@ -394,6 +402,9 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @param {Element} contentContainer The main content.
      */
     this.handleTransitionEnd = function (contentContainer) {
+
+        console.log(`handle transition end - this._onNavTransitionEnd: ${this._onNavTransitionEnd}`);
+
         this.navContainer.removeEventListener('transitionend', this._onNavTransitionEnd, false);
         this._onNavTransitionEnd = onNavTransitionEnd.bind(null, this.navContainer);
         this.navContainer.addEventListener('transitionend', this._onNavTransitionEnd, false);
