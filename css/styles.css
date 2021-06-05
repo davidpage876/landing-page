@@ -69,13 +69,53 @@ h3 {
 
 @media only screen and (min-width: 960px) {
 
+    p,
+    h1,
+    h2,
+    h3,
+    a,
+    button,
+    div {
+        font-size: 19px;
+    }
+
     .section p {
-        font-size: 32px;
+        font-size: 22px;
+    }
+
+    h1 {
+        font-size: 21px;
+        letter-spacing: 6.2px;
+    }
+
+    h2 {
+        font-size: 40px;
+    }
+
+    h3 {
+        font-size: 30px;
+    }
+
+}
+
+@media only screen and (min-width: 1400px) {
+
+    p,
+    h1,
+    h2,
+    h3,
+    a,
+    button,
+    div {
+        font-size: 22px;
+    }
+
+    .section p {
+        font-size: 34px;
     }
 
     h1 {
         font-size: 23px;
-        letter-spacing: 6.2px;
     }
 
     h2 {
