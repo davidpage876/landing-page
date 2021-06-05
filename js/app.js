@@ -62,6 +62,20 @@ function secondsToMs(seconds) {
 }
 
 /**
+ * @description Determines which section is currently in view.
+ * @param {Element[]} - List of sections.
+ * @returns {Element} - The element in view.
+ */
+function getSectionInView(contentSections) {
+    const WITHIN_SCREEN_PERCENT = 0.5; // 50%
+    for (const section of contentSections) {
+        if (isSectionInView(section, WITHIN_SCREEN_PERCENT)) {
+            return section;
+        }
+    }
+};
+
+/**
  * @description Checks if a section is in view.
  * @param {Element} section - Section to check.
  * @param {number} withinScreenPercent - The section must be within percentage of screen from the centre.
@@ -158,19 +172,22 @@ function ScrollManager(defaultDuration = 1000) {
  * @param {Element} navMarker - Marker used to indicate current nav item.
  * @param {Element} navHotspot - Cursor area that covers the nav menu.
  * @param {Element} body - HTML body element. Used to prevent page scrolling in mobile while nav menu open.
+ * @param {number} inactivityTimeout - Closes the nav menu after a time of inactivity. Time is in milliseconds.
+ * If zero, do not close the menu due to inactivity.
  */
-function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
+function Navigation(navContainer, navToggle, navMarker, navHotspot, body, inactivityTimeout = 0) {
     this.navContainer = navContainer;
     this.navToggle = navToggle;
     this.navMarker = navMarker;
     this.navHotspot = navHotspot;
     this.body = body;
+    this.inactivityTimeout = inactivityTimeout;
     this.navItems = [];
     this._onNavTransitionEnd = null;
     this._onContentTransitionEnd = null;
     this._fadeTimeoutId = null;
     this._inactivityTimerId = null;
-    this._isCursorOverNavMenu = true;
+    this._isCursorOverNavMenu = false;
 
     /**
      * @description Build navigation list items based on content.
@@ -301,6 +318,8 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
     this.openNavMenu = function (contentContainer, scrollManager = undefined, fade = false) {
         const mobile = hasSmallScreen();
 
+        console.log(`openNavMenu - inactivityTimeout: ${this.inactivityTimeout}`);
+
         // Show nav menu.
         this.navContainer.classList.add('open');
         this.navContainer.classList.remove('hidden');
@@ -412,21 +431,21 @@ function Navigation(navContainer, navToggle, navMarker, navHotspot, body) {
      * @param {ScrollManager} scrollManager - Manager for scrolling behaviour.
      */
     this.resetInactivityTimer = function (contentContainer, scrollManager) {
-        const TIMEOUT_TIME = 1000;
-
         window.clearTimeout(this._inactivityTimerId);
-        const onTimeout = () => {
+        if (this.inactivityTimeout !== 0) {
+            const onTimeout = () => {
 
-            // Reset timer if the cursor is over the menu, otherwise close the menu.
-            if (!hasSmallScreen()) {
-                if (this._isCursorOverNavMenu) {
-                    this._inactivityTimerId = window.setTimeout(onTimeout, TIMEOUT_TIME);
-                } else {
-                    this.closeNavMenu(contentContainer, scrollManager, true, true);
+                // Reset timer if the cursor is over the menu, otherwise close the menu.
+                if (!hasSmallScreen()) {
+                    if (this._isCursorOverNavMenu) {
+                        this._inactivityTimerId = window.setTimeout(onTimeout, this.inactivityTimeout);
+                    } else {
+                        this.closeNavMenu(contentContainer, scrollManager, true, true);
+                    }
                 }
-            }
-        };
-        this._inactivityTimerId = window.setTimeout(onTimeout, TIMEOUT_TIME);
+            };
+            this._inactivityTimerId = window.setTimeout(onTimeout, this.inactivityTimeout);
+        }
     }
 }
 
@@ -537,6 +556,7 @@ function focusSection(section, contentContainer, contentSections, nav, body,
  * @description Perform initial page set up, including building the navigation menu from content.
  */
 function pageSetup() {
+
     // Set up scroll manager.
     const scrollDuration = secondsToMs(
         getComputedStyle(document.documentElement).getPropertyValue('--section-transition-time'));
@@ -548,49 +568,50 @@ function pageSetup() {
     const navMarker = document.getElementById('nav-marker');
     const navHotspot = document.getElementById('site-header');
     const body = document.querySelector('body');
-    const nav = new Navigation(navContainer, navToggle, navMarker, navHotspot, body);
+    const nav = new Navigation(navContainer, navToggle, navMarker, navHotspot, body, 0);
 
     // Build navigation from content.
     const contentContainer = document.getElementById('content');
     const contentSections = document.querySelectorAll('#content > .section');
     nav.buildNavigation(contentContainer, contentSections, scrollManager);
 
-    // Open the nav menu to start with.
-    nav.openNavMenu(contentContainer, scrollManager, true);
-
-    // Handle scroll event, focusing on the section in view.
-    let sectionInView = undefined;
-    window.addEventListener('scroll', () => {
+    // Focus on the section in view on page scroll.
+    const onScroll = () => {
 
         // Open the nav menu on scroll (large screens only).
+        // Do not use an inactivity timeout initially on page load.
         if (!hasSmallScreen()) {
             nav.openNavMenu(contentContainer, scrollManager, true);
         }
 
         // Determine which section is currently in view.
-        // If the section changed, focus on it.
-        const WITHIN_SCREEN_PERCENT = 0.5; // 50%
-        for (const section of contentSections) {
-            if (isSectionInView(section, WITHIN_SCREEN_PERCENT)) {
-                sectionInView = section;
+        const sectionInView = getSectionInView(contentSections);
 
-                // Only focus on the section if the view was scrolled by user input (or the browser),
-                // rather than being controlled the scroll manager.
-                if (!scrollManager.triggeredScrollEvent) {
+        // Focus on the section currently in view, as long as the view was scrolled by user input (or the browser),
+        // rather than being animated by the scroll manager.
+        if (!scrollManager.triggeredScrollEvent) {
 
-                    // Interrupt any previous scrolling on user input.
-                    scrollManager.interruptScroll();
+            // Interrupt any previous scrolling on user input.
+            scrollManager.interruptScroll();
 
-                    focusSection(sectionInView, contentContainer, contentSections, nav, body, scrollManager, true);
-                }
-                scrollManager.triggeredScrollEvent = false;
-                break;
-            }
+            focusSection(sectionInView, contentContainer, contentSections, nav, body, scrollManager, true);
         }
-    }, false);
+        scrollManager.triggeredScrollEvent = false;
+    };
+    window.addEventListener('scroll', onScroll, false);
 
-    // Initially focus on first section.
-    focusSection(contentSections[0], contentContainer, contentSections, nav, body, scrollManager, false);
+    // Initially focus on section in view and open the nav menu on large screens.
+    const sectionInView = getSectionInView(contentSections);
+    focusSection(sectionInView, contentContainer, contentSections, nav, body, scrollManager, false);
+    if (!hasSmallScreen()) {
+        nav.openNavMenu(contentContainer, scrollManager, false);
+    }
+
+    // Enable inactivity timeout on scroll after a short time.
+    const INACTIVITY_TIMEOUT = 1000;
+    window.setTimeout(() => {
+        nav.inactivityTimeout = INACTIVITY_TIMEOUT;
+    }, 500);
 }
 
 pageSetup();
