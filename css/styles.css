@@ -358,7 +358,7 @@ h3 {
  */
 
 .bg {
-    background: #3400C7; /* default fallback */
+    background: #2a009e; /* default fallback */
 }
 
 .gradient-bg {
@@ -375,81 +375,81 @@ h3 {
 /* Bluish */
 .gradient-bg .gradient--top,
 .gradient-bg--bluish .gradient--top {
-	stop-color: #3400C7;
+	stop-color: #3200bb;
 }
 
 .gradient-bg .gradient--bottom,
 .gradient-bg--bluish .gradient--bottom {
-	stop-color: #6800A3;
+	stop-color: #5a008f;
 }
 
 .bg.gradient-bg--bluish {
-	background: #6800A3;
+	background: #5a008f;
 }
 
 /* Greenish */
 .gradient-bg--greenish .gradient--top {
-	stop-color: #273f00;
+	stop-color: #2a4400;
 }
 
 .gradient-bg--greenish .gradient--bottom {
-	stop-color: #176D00;
+	stop-color: #00641e;
 }
 
 .bg.gradient-bg--greenish {
-	background: #176D00;
+	background: #00641e;
 }
 
 /* Redish */
 .gradient-bg--redish .gradient--top {
-	stop-color: #570f0e;
+	stop-color: #520100;
 }
 
 .gradient-bg--redish .gradient--bottom {
-	stop-color: #b36500b0;
+	stop-color: #774d00;
 }
 
 .bg.gradient-bg--redish {
-	background: #b36500b0;
+	background: #774d00;
 }
 
 /* Aquaish */
 .gradient-bg--aquaish .gradient--top {
-	stop-color: #008bc2;
+	stop-color: #00658d;
 }
 
 .gradient-bg--aquaish .gradient--bottom {
-	stop-color: #007544;
+	stop-color: #00683d;
 }
 
 .bg.gradient-bg--aquaish {
-	background: #007544;
+	background: #00683d;
 }
 
 /* Purplish */
 .gradient-bg--purplish .gradient--top {
-	stop-color: #67028f;
+	stop-color: #4a0068;
 }
 
 .gradient-bg--purplish .gradient--bottom {
-	stop-color: #8a6624;
+	stop-color: #684300;
 }
 
 .bg.gradient-bg--purplish {
-	background: #8a6624;
+	background: #684300;
 }
 
 /* Yellowish */
 .gradient-bg--yellowish .gradient--top {
-	stop-color: #814e0b;
+	stop-color: #756a00;
 }
 
 .gradient-bg--yellowish .gradient--bottom {
-	stop-color: #9c8d00;
+	stop-color: #5f3600;
 }
 
 .bg.gradient-bg--yellowish {
-	background: #9c8d00;
+	background: #5f3600;
 }
 
 /* -----------------------------------------------------------
