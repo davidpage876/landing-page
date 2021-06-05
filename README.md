@@ -34,8 +34,6 @@ My project implements some ambitious (and somewhat experimental) special effects
 
 Note that I only support modern browsers. Specifically, my JavaScript functionality is not supported on IE.
 
-* Navigation menu sometimes disappears abruptly rather than smoothly fading out.
-
 ## Design Review
 
 For reference my initial design mockup animatic can be seen below. Most effects have been replicated closely, except for the "dot grid" effect, which I discarded.
